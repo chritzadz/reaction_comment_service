@@ -1,3 +1,5 @@
+import { CommentBox } from "./components/CommentBox"
+
 function App() {
   return (
     <div className="justify-center items-center flex flex-row">
@@ -5,7 +7,9 @@ function App() {
         hello
       </div>
       <div className="comment-box w-3/5 h-screen bg-gray-900 border">
-        hello
+        <CommentBox>
+          
+        </CommentBox>
       </div>
       <div className="comment-box w-1/5 h-screen bg-gray-900 border">
         hello
