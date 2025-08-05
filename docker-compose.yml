@@ -1,0 +1,12 @@
+version: '0.0.1'
+
+services:
+  web:
+    image: node:latest
+    ports:
+      - "3000:3000"
+
+  app:
+    image: node:latest
+    ports:
+      - "3001:3001"
