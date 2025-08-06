@@ -37,7 +37,7 @@ export function PostBox({ id, username, content, created_at }: PostBoxProps) {
             JSON.parse(data.data).map((reply: ReplyObject) => {
                 tempArray.push(reply);
             });
-            //setReplies(tempArray);
+            setReplies(tempArray);
             console.log(tempArray);
         };
     
@@ -45,11 +45,7 @@ export function PostBox({ id, username, content, created_at }: PostBoxProps) {
       }, []);
 
     const [openReply, setOpenReply] = useState(false);
-    const [replies, setReplies] = useState<ReplyObject[]>([{
-        id: "1",
-        username: "User1",
-        content: "This is a reply"
-    }]);
+    const [replies, setReplies] = useState<ReplyObject[]>([]);
     const firstLetter: String = username[0].toUpperCase();
 
     return (
