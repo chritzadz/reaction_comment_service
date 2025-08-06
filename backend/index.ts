@@ -44,13 +44,13 @@ let posts = [
     {
         id: 1,
         username: 'user1',
-        content: 'This is a comment',
+        content: 'This is a posts',
         created_at: '2023-01-01'
     },
     {
         id: 2,
         username: 'user2',
-        content: 'This is another comment',
+        content: 'This is another posts',
         created_at: '2023-01-02'
     }
 ];
