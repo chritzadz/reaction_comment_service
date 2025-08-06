@@ -1,10 +1,10 @@
 Main requirements:
-1. reactions = [Like, Love, HaHa, Sad, Angry] // no reaction
-2. each comment, one reaction or no reaction
+1. reactions = [Like, Love, HaHa, Sad, Angry] // no reaction DONE
+2. each comment, one reaction or no reaction DONE
 3. remove reaction
 4. allow to modify reaction
 5. comment's content support -> HTML content
-6. one comment, have MAXIMUM one level reply DONE
+6. one comment, have MAXIMUM one level reply DONE 
 7. allow to delete comment by owner and thread owner
 8. allow to edit comment by owner
 9. comments sorted by publish date
@@ -20,3 +20,8 @@ Deliverables:
 Addition:
 1. provide comment edit history feature
 2. design scalable architecture horizontally
+
+-> so actually make a login system would be ideal, just simple username and password
+-> now there is a state of the username -> assuming username is unique
+-> if that is done, then we can differentiate between the replies. 
+-> each reply can (depite of its owner), 

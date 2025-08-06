@@ -14,9 +14,12 @@ export function ReplyBox({ id, username, content}: ReplyBoxProps) {
     const handleHover = () => {
         setMouseOn(!mouseOn);
     }
+
+    const onReactionClick = (type: string) => {
+        
+    }
+
     useEffect(() => {
-     
-        console.log({id, username, content})
         const fetchReactions = async () => {
             const response = await fetch('/api/get_reactions', {
                 method: 'POST',
@@ -46,17 +49,15 @@ export function ReplyBox({ id, username, content}: ReplyBoxProps) {
                     <p className="text-white text-xl justify-start">{username}</p>
                 </div>
                 { mouseOn &&
-                    <div className="w-full w-1/2 h-10 mr-10 flex flex-row gap-5 text-white justify-end pl-2 pr-5 font-bold">
-                        <span>{reactionCount[0]}👍</span>
-                        <span>{reactionCount[1]}❤️</span>
-                        <span>{reactionCount[2]}😂</span>
-                        <span>{reactionCount[3]}🙁</span>
-                        <span>{reactionCount[4]}🙂</span>
+                    <div className="w-full w-1/2 h-10 mr-10 flex flex-row gap-5 text-white justify-end pl-2 pr-5">
+                        <span>{reactionCount[0]}<span onClick={() => {onReactionClick("like")}}>👍</span></span>
+                        <span>{reactionCount[1]}<span onClick={() => {onReactionClick("love")}}>❤️</span></span>
+                        <span>{reactionCount[2]}<span onClick={() => {onReactionClick("haha")}}>😂</span></span>
+                        <span>{reactionCount[3]}<span onClick={() => {onReactionClick("sad")}}>🙁</span></span>
+                        <span>{reactionCount[4]}<span onClick={() => {onReactionClick("angry")}}>🙂</span></span>
                     </div>
                 }
-                
             </div>
-           
             <div>
                 <p className="text-white">{content}</p>
             </div>
