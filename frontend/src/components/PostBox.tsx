@@ -1,0 +1,93 @@
+import { useEffect, useState } from "react";
+import heartIcon from '../assets/heart.png';
+import chatBubble from '../assets/chat-bubble.png';
+import type { ReplyObject } from '../model/ReplyObject'
+import { ReplyBox } from './ReplyBox'
+
+interface PostBoxProps {
+    id: string;
+    username: string;
+    content: string;
+    created_at: string;
+}
+
+export function PostBox({ id, username, content, created_at }: PostBoxProps) {
+
+
+    const handleReplyClick = () => {
+        setOpenReply(!openReply);
+    }
+
+    useEffect(() => { 
+        const fetchReplies = async () => {
+            const response = await fetch('/api/get_replies', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({  
+                    post_id: id
+                }),
+            });
+        
+            const data = await response.json();
+            
+            let tempArray: ReplyObject[] = []
+          
+            JSON.parse(data.data).map((reply: ReplyObject) => {
+                tempArray.push(reply);
+            });
+            //setReplies(tempArray);
+            console.log(tempArray);
+        };
+    
+        fetchReplies();
+      }, []);
+
+    const [openReply, setOpenReply] = useState(false);
+    const [replies, setReplies] = useState<ReplyObject[]>([{
+        id: "1",
+        username: "User1",
+        content: "This is a reply"
+    }]);
+    const firstLetter: String = username[0].toUpperCase();
+
+    return (
+        <div className="items-center w-full p-10 flex flex-col gap-3">
+            <div className="flex flex-row gap-3 w-full items-center"> {/* photo and username, just use letter for now */}
+                <div className="p-3 h-12 aspect-square bg-orange-600 flex justify-center items-center rounded-lg border-2"> {/* photo */}
+                    <div className="text-2xl font-bold">{firstLetter}</div>
+                </div>
+                <p className="text-white text-xl justify-start">{username}</p>
+            </div>
+            <div className="w-full flex flex-col gap-3"> {/* post section */}
+                <p className="w-full text-white rounded-md text-lg">{content}</p>
+                <div className="flex w-full text-md text-white"> {/* date */}
+                    <p>{created_at}</p>
+                </div>
+            </div>
+            <div className="w-full"> {/* comments and like icon and the count as well */}
+                <hr className="w-full border-white" />
+                <div className="w-full items-center justify-center flex flex-row p-2 gap-10">
+                    <div className="h-10 aspect-square rounded-lg border-2 p-1 bg-slate-500" onClick={handleReplyClick}>
+                        <img src={chatBubble} className=""></img>
+                    </div>
+                    <div className="h-10 aspect-square rounded-lg border-2 p-1 bg-slate-500" onClick={() => {}}>
+                        <img src={heartIcon} className=""></img>
+                    </div>
+                </div>
+                <hr className="w-full border-white" />
+            </div>
+            {openReply && 
+                <div className="w-full flex flex-col gap-3"> {/* replies section */}
+                    {replies.map((reply: ReplyObject) => (
+                        <div>
+                            <ReplyBox key={reply.id} id={reply.id} username={reply.username} content={reply.content} />
+                            <hr className="w-full bg-white border-1 mt-2 mb-2"></hr>
+                        </div>
+                    ))}
+                </div>
+            }
+        </div>
+    )
+}
