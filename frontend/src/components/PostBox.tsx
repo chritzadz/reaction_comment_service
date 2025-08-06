@@ -38,7 +38,7 @@ export function PostBox({ id, username, content, created_at }: PostBoxProps) {
                 tempArray.push(reply);
             });
             setReplies(tempArray);
-            console.log(tempArray);
+            console.log(replies);
         };
     
         fetchReplies();

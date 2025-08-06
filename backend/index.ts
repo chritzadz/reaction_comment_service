@@ -23,12 +23,46 @@ app.post('/api/get_replies', (req, res) => {
       .filter(relation => relation.post_id === post_id)
       .map(relation => relation.reply_id);
       
-    const repliesForPost = replies.filter(reply => replyIds.includes(reply.reply_id));
+    const repliesForPost = replies.filter(reply => replyIds.includes(reply.id));
 
     res.json({
         status: 'OK',
         data: JSON.stringify(
             repliesForPost
+        )
+    });
+}); 
+
+app.post('/api/get_reactions', (req, res) => {
+    const { reply_id } = req.body;
+
+    console.log("reply_id", reply_id);
+    const reactionByReplyId = reactions.filter(reaction => reaction.reply_id === reply_id);
+    console.log(reactionByReplyId);
+
+    let reactionList = [0, 0, 0, 0, 0] // [like, love, haha, sad, angry]
+    for (let i = 0; i < reactionByReplyId.length; i++) {
+        if (reactionByReplyId[i].type === 'like'){
+            reactionList[0] += 1;
+        }
+        else if (reactionByReplyId[i].type === 'love'){
+            reactionList[1] += 1;
+        }
+        else if (reactionByReplyId[i].type === 'haha'){
+            reactionList[2] += 1;
+        }
+        else if (reactionByReplyId[i].type === 'sad'){
+            reactionList[3] += 1;
+        }
+        else if (reactionByReplyId[i].type === 'angry'){
+            reactionList[4] += 1;
+        }
+    }
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify(
+            reactionList
         )
     });
 });
@@ -71,21 +105,45 @@ let post_have_replies = [
     }
 ];
 
-//
 let replies = [
     {
-        reply_id: 1,
+        id: 1,
         username: 'user1',
         content: 'Amazing!'
     },
     {
-        reply_id: 2,
+        id: 2,
         username: 'user2',
         content: 'Waw!'
     },
     {
-        reply_id: 3,
+        id: 3,
         username: 'user2',
         content: 'Interesting!'
     }
 ];
+
+//6 types of reactions [like, love, haha, sad, angry] primary keys should be: reply_id and username since one user can only react once to a reply
+let reactions = [
+    {
+        reply_id: 1,
+        username: 'user1',
+        type: 'like',
+        
+    },
+    {
+        reply_id: 1,
+        username: 'user2',
+        type: 'like',
+    },
+    {
+        reply_id: 2,
+        username: 'user3',
+        type: 'love',
+    },
+    {
+        reply_id: 2,
+        username: 'user4',
+        type: 'sad',
+    },
+]

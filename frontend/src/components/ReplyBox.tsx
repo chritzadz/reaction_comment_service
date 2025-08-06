@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ReplyBoxProps {
     id: string;
@@ -14,8 +14,28 @@ export function ReplyBox({ id, username, content}: ReplyBoxProps) {
     const handleHover = () => {
         setMouseOn(!mouseOn);
     }
+    useEffect(() => {
+     
+        console.log({id, username, content})
+        const fetchReactions = async () => {
+            const response = await fetch('/api/get_reactions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({  
+                    reply_id: id
+                }),
+            });
+        
+            const data = await response.json();
+            console.log(JSON.parse(data.data))
+            setReactionCount(JSON.parse(data.data));
+        };
     
-    console.log(id)
+        fetchReactions();
+    }, []);
+
     return (
         <div className="w-full flex flex-col w-full gap-2 ml-10" onMouseEnter={handleHover} onMouseLeave={handleHover}>
             <div className="flex flex-row gap-3 w-full items-center">
