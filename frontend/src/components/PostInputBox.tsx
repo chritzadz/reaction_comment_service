@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-export function CommentInputBox() {
-    const [commentSectionValue, setCommentSectionValue] = useState("");
+export function PostInputBox() {
+    const [postSectionValue, setPostSectionValue] = useState("");
 
     const username: String = "christianDumanauw";
     const firstLetter: String = username[0].toUpperCase();
@@ -14,10 +14,10 @@ export function CommentInputBox() {
                 </div>
                 <p className="text-white text-xl justify-start">{username}</p>
             </div>
-            <div className="w-full"> {/* comment section */}
+            <div className="w-full"> {/* post section */}
                 <textarea
-                    value={commentSectionValue}
-                    onChange={(e) => setCommentSectionValue(e.target.value)}
+                    value={postSectionValue}
+                    onChange={(e) => setPostSectionValue(e.target.value)}
                     placeholder='What are you thinking today!'
                     className="w-full aspect-[9/3] border-white border-2 bg-gray-800 text-white rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-white"
                 />
