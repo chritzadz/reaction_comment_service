@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import heartIcon from '../assets/heart.png';
 import chatBubble from '../assets/chat-bubble.png';
 
 export function CommentBox() {
-    const [commentSectionValue, setCommentSectionValue] = useState("Hello, this is a comment!");
+    const [commentSectionValue] = useState("Hello, this is a comment!");
 
     const username: String = "christianDumanauw";
     const firstLetter: String = username[0].toUpperCase();
