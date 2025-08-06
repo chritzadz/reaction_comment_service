@@ -1,4 +1,6 @@
 import express from 'express';
+import { createHandler } from 'graphql-http/lib/use/express';
+import { buildSchema } from 'graphql';
 
 const app = express();
 const PORT = 3001;
@@ -13,6 +15,24 @@ app.post('/api/get_posts', (req, res) => {
         )
     });
 });
+
+app.post('/api/get_replies', (req, res) => {
+    const { post_id } = req.body;
+
+    const replyIds = post_have_replies
+      .filter(relation => relation.post_id === post_id)
+      .map(relation => relation.reply_id);
+      
+    const repliesForPost = replies.filter(reply => replyIds.includes(reply.reply_id));
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify(
+            repliesForPost
+        )
+    });
+});
+
 
 
 app.listen(PORT, () => {
@@ -47,7 +67,7 @@ let post_have_replies = [
     },
     {
         post_id: 2,
-        reply_id: 1
+        reply_id: 3
     }
 ];
 
@@ -64,7 +84,7 @@ let replies = [
         content: 'Waw!'
     },
     {
-        reply_id: 1,
+        reply_id: 3,
         username: 'user2',
         content: 'Interesting!'
     }
