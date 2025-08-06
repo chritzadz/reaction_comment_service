@@ -5,10 +5,12 @@ const PORT = 3001;
 
 app.use(express.json());
 //there should be a database connection here, say PostgreSQL for example but I cannot set it up because of company policy, for this example I will just return a static response
-app.post('/get_comments', (req, res) => {
+app.post('/api/get_comments', (req, res) => {
     res.json({
         status: 'OK',
-        data: JSON.stringify(comments)
+        data: JSON.stringify(
+            comments
+        )
     });
 });
 

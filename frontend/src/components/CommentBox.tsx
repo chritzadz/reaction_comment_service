@@ -2,12 +2,15 @@ import { useState } from "react";
 import heartIcon from '../assets/heart.png';
 import chatBubble from '../assets/chat-bubble.png';
 
-export function CommentBox() {
-    const [commentSectionValue] = useState("Hello, this is a comment!");
+interface CommentBoxProps {
+    id: string;
+    username: string;
+    content: string;
+    created_at: string;
+}
 
-    const username: String = "christianDumanauw";
+export function CommentBox({ id, username, content, created_at }: CommentBoxProps) {
     const firstLetter: String = username[0].toUpperCase();
-    const date: String = "19/10/2005"
 
     return (
         <div className="items-center w-full p-10 flex flex-col gap-3">
@@ -18,9 +21,9 @@ export function CommentBox() {
                 <p className="text-white text-xl justify-start">{username}</p>
             </div>
             <div className="w-full flex flex-col gap-3"> {/* comment section */}
-                <p className="w-full text-white rounded-md text-lg">{commentSectionValue}</p>
+                <p className="w-full text-white rounded-md text-lg">{content}</p>
                 <div className="flex w-full text-md text-white"> {/* date */}
-                    <p>{date}</p>
+                    <p>{created_at}</p>
                 </div>
             </div>
             <div className="w-full"> {/* comments and like icon and the count as well */}
