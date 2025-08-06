@@ -10,7 +10,8 @@ function App() {
         <CommentInputBox>
         </CommentInputBox>
         <hr className="w-full bg-white border-1"></hr>
-        <CommentBox></CommentBox>
+        <CommentBox>
+        </CommentBox>
       </div>
       <div className="comment-box w-1/5 max-lg:w-1/5 max-md:w-1/5 max-sm:w-0 h-full border">
       </div>
