@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { CommentBox } from "./components/CommentBox"
-import { CommentInputBox } from "./components/CommentInputBox"
-import type { CommentObject } from './model/CommentObject';
+import { PostBox } from "./components/PostBox"
+import { PostInputBox } from "./components/PostInputBox"
+import type { PostObject } from './model/PostObject';
 import { Spinner } from 'react-bootstrap';
 
 function App() {
-  const [comments, setComments] = useState<CommentObject[]>([]);
+  const [posts, setPosts] = useState<PostObject[]>([]);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      const response = await fetch('/api/get_comments', {
+  useEffect(() => { 
+    const fetchPosts = async () => {
+      const response = await fetch('/api/get_posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,16 +19,16 @@ function App() {
 
       const data = await response.json();
 
-      let tempArray: CommentObject[] = []
+      let tempArray: PostObject[] = []
 
-      JSON.parse(data.data).map((comment: CommentObject) => {
-        tempArray.push(comment);
+      JSON.parse(data.data).map((post: PostObject) => {
+        tempArray.push(post);
       });
-      setComments(tempArray);
-      console.log(comments);
+      setPosts(tempArray);
+      console.log(posts);
     };
 
-    fetchComments();
+    fetchPosts();
   }, []);
 
   return (
@@ -36,18 +36,18 @@ function App() {
       <div className="comment-box w-1/5 max-lg:w-1/5 max-md:w-1/5 max-sm:w-0 h-full">
       </div>
       <div className="comment-box w-3/5 max-lg:w-3/5 max-md:w-3/5 max-sm:w-full border">
-        <CommentInputBox>
-        </CommentInputBox>
+        <PostInputBox>
+        </PostInputBox>
         <hr className="w-full bg-white border-1"></hr>
         <div>
-          {comments.length === 0 &&
+          {posts.length === 0 &&
             <Spinner animation="border" role="status">
               <span className="visually-hidden">Loading...</span>
             </Spinner>
           }
-          {comments.map((comment: CommentObject) => (
-            <div>
-              <CommentBox key={comment.id} id={comment.id} username={comment.username} content={comment.content} created_at={comment.created_at} />
+          {posts.map((post: PostObject) => (
+            <div key={post.id}>
+              <PostBox key={post.id} id={post.id} username={post.username} content={post.content} created_at={post.created_at} />
               <hr className="w-full bg-white border-1"></hr>
             </div>
           ))}

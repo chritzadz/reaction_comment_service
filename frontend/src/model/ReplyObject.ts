@@ -1,6 +1,5 @@
-export interface CommentObject {
+export interface ReplyObject {
    id: string;
    username: string;
    content: string;
-   created_at: string;
 }

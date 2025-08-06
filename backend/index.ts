@@ -5,11 +5,11 @@ const PORT = 3001;
 
 app.use(express.json());
 //there should be a database connection here, say PostgreSQL for example but I cannot set it up because of company policy, for this example I will just return a static response
-app.post('/api/get_comments', (req, res) => {
+app.post('/api/get_posts', (req, res) => {
     res.json({
         status: 'OK',
         data: JSON.stringify(
-            comments
+            posts
         )
     });
 });
@@ -20,7 +20,7 @@ app.listen(PORT, () => {
 });
 
 //comments
-let comments = [
+let posts = [
     {
         id: 1,
         username: 'user1',
@@ -36,17 +36,17 @@ let comments = [
 ];
 
 //replied have a composite primary keys -> to normalize we could seperate a new table for replied with, reply id, i iwll do it.
-let comment_have_replies = [
+let post_have_replies = [
     {
-        comment_id: 1,
+        post_id: 1,
         reply_id: 1
     },
     {
-        comment_id: 1,
+        post_id: 1,
         reply_id: 2
     },
     {
-        comment_id: 2,
+        post_id: 2,
         reply_id: 1
     }
 ];
