@@ -1,63 +1,64 @@
 import express from 'express';
+import pool from './db/db';
 import { createHandler } from 'graphql-http/lib/use/express';
 import { buildSchema } from 'graphql';
+import { ReplyObject } from './model/ReplyObject';
+import { ReactionObject } from './model/ReactionObject';
 
 const app = express();
 const PORT = 3001;
 
 app.use(express.json());
-//there should be a database connection here, say PostgreSQL for example but I cannot set it up because of company policy, for this example I will just return a static response
-app.post('/api/get_posts', (req, res) => {
+
+app.post('/api/get_posts', async (req, res) => {
+    const task = await pool.query(`
+        SELECT * FROM posts
+        `);
+    
     res.json({
         status: 'OK',
         data: JSON.stringify(
-            posts
+            task.rows
         )
     });
 });
 
-app.post('/api/get_replies', (req, res) => {
+app.post('/api/get_replies', async (req, res) => {
     const { post_id } = req.body;
 
-    const replyIds = post_have_replies
-      .filter(relation => relation.post_id === post_id)
-      .map(relation => relation.reply_id);
-      
-    const repliesForPost = replies.filter(reply => replyIds.includes(reply.id));
+    const task = await pool.query<ReplyObject>(`
+        SELECT r.username, r.id, r.content FROM replies r 
+        INNER JOIN post_have_replies phr ON (r.id = phr.reply_id) 
+        INNER JOIN posts p ON (p.id = phr.post_id) 
+        WHERE post_id = $1;
+    `, [post_id]);
 
     res.json({
         status: 'OK',
         data: JSON.stringify(
-            repliesForPost
+            task.rows
         )
     });
 }); 
 
-app.post('/api/get_reactions', (req, res) => {
+app.post('/api/get_reactions', async (req, res) => {
     const { reply_id } = req.body;
-
-    console.log("reply_id", reply_id);
-    const reactionByReplyId = reactions.filter(reaction => reaction.reply_id === reply_id);
-    console.log(reactionByReplyId);
+    const reactionByReplyId = await pool.query<ReactionObject>(`
+        SELECT rea.reply_id, rea.username, rea.type FROM replies rep 
+        INNER JOIN reactions rea ON (rep.id = rea.reply_id)
+        WHERE rea.reply_id = $1;
+    `, [reply_id]);
 
     let reactionList = [0, 0, 0, 0, 0] // [like, love, haha, sad, angry]
-    for (let i = 0; i < reactionByReplyId.length; i++) {
-        if (reactionByReplyId[i].type === 'like'){
-            reactionList[0] += 1;
+    reactionByReplyId.rows.forEach(reaction => {
+        switch(reaction.type) {
+            case 'like': reactionList[0] += 1; break;
+            case 'love': reactionList[1] += 1; break;
+            case 'haha': reactionList[2] += 1; break;
+            case 'sad': reactionList[3] += 1; break;
+            case 'angry': reactionList[4] += 1; break;
         }
-        else if (reactionByReplyId[i].type === 'love'){
-            reactionList[1] += 1;
-        }
-        else if (reactionByReplyId[i].type === 'haha'){
-            reactionList[2] += 1;
-        }
-        else if (reactionByReplyId[i].type === 'sad'){
-            reactionList[3] += 1;
-        }
-        else if (reactionByReplyId[i].type === 'angry'){
-            reactionList[4] += 1;
-        }
-    }
+    });
 
     res.json({
         status: 'OK',
@@ -67,83 +68,83 @@ app.post('/api/get_reactions', (req, res) => {
     });
 });
 
+app.post('/api/post_post', async (req, res) => {
+    const { username, content } = req.body;
 
+    const data = new Date();
+    const currDate = `${data.getFullYear()}-${data.getMonth() + 1}-${data.getDate()}`;
+
+    const task = await pool.query(`
+        INSERT INTO posts (username, content, created_at) VALUES ($1, $2, $3) RETURNING *;
+        `, [username, content, currDate]
+    );
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
+
+app.post('/api/post_reply', async (req, res) => {
+    const { username, content, post_id } = req.body;
+
+    const postReply = await pool.query(`
+        INSERT INTO replies (username, content) VALUES ($1, $2) RETURNING *;
+    `, [username, content]);
+
+    const reply_id = postReply.rows[0].id;
+    const task = await pool.query(`
+        INSERT INTO post_have_replies (post_id, reply_id) VALUES ($1, $2);
+        `, [post_id, reply_id]
+    );
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
+
+app.post('/api/post_reaction', async (req, res) => {
+    const { username, type, reply_id } = req.body;
+    
+    const task = await pool.query(`
+        INSERT INTO reactions (username, type, reply_id) VALUES ($1, $2, $3);
+    `, [username, type, reply_id]);
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
+
+app.post('/api/delete_reaction', async (req, res) => {
+    const { username, reply_id } = req.body;
+
+    const task = await pool.query(`
+        DELETE FROM reactions WHERE username = $1 AND reply_id = $2;
+    `, [username, reply_id]);
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
+
+app.post('/api/alter_reaction', async (req, res) => {
+    const { username, type, reply_id } = req.body;
+    
+    const task = await pool.query(`
+        UPDATE reactions
+        SET type = $1
+        WHERE username = $2 AND reply_id = $3;
+    `, [type, username, reply_id]);
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
-
-//comments
-let posts = [
-    {
-        id: 1,
-        username: 'user1',
-        content: 'This is a posts',
-        created_at: '2023-01-01'
-    },
-    {
-        id: 2,
-        username: 'user2',
-        content: 'This is another posts',
-        created_at: '2023-01-02'
-    }
-];
-
-//replied have a composite primary keys -> to normalize we could seperate a new table for replied with, reply id, i iwll do it.
-let post_have_replies = [
-    {
-        post_id: 1,
-        reply_id: 1
-    },
-    {
-        post_id: 1,
-        reply_id: 2
-    },
-    {
-        post_id: 2,
-        reply_id: 3
-    }
-];
-
-let replies = [
-    {
-        id: 1,
-        username: 'user1',
-        content: 'Amazing!'
-    },
-    {
-        id: 2,
-        username: 'user2',
-        content: 'Waw!'
-    },
-    {
-        id: 3,
-        username: 'user2',
-        content: 'Interesting!'
-    }
-];
-
-//6 types of reactions [like, love, haha, sad, angry] primary keys should be: reply_id and username since one user can only react once to a reply
-let reactions = [
-    {
-        reply_id: 1,
-        username: 'user1',
-        type: 'like',
-        
-    },
-    {
-        reply_id: 1,
-        username: 'user2',
-        type: 'like',
-    },
-    {
-        reply_id: 2,
-        username: 'user3',
-        type: 'love',
-    },
-    {
-        reply_id: 2,
-        username: 'user4',
-        type: 'sad',
-    },
-]
