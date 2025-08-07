@@ -16,7 +16,7 @@ export function ReplyBox({ id, username, content}: ReplyBoxProps) {
     }
 
     const onReactionClick = (type: string) => {
-        
+        console.log(type)
     }
 
     useEffect(() => {
