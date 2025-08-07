@@ -1,10 +1,23 @@
 import { useState } from "react";
+import { Spinner } from "react-bootstrap";
 
-export function PostInputBox() {
+interface PostInputBoxProps {
+    handlePostSubmit: (content: string, username: string) => void;
+}
+
+export function PostInputBox({ handlePostSubmit }: PostInputBoxProps) {
     const [postSectionValue, setPostSectionValue] = useState("");
+    const [isPostLoading, setIsPostLoading] = useState(false);
 
-    const username: String = "christianDumanauw";
-    const firstLetter: String = username[0].toUpperCase();
+    const username: string = "christianDumanauw";
+    const firstLetter: string = username[0].toUpperCase();
+
+    const handleClickSubmit = async () => {
+        setIsPostLoading(true);
+        await handlePostSubmit(postSectionValue, username);
+        setPostSectionValue("");
+        setIsPostLoading(false);
+    }
 
     return (
         <div className="items-center w-full p-10 flex flex-col gap-3">
@@ -22,6 +35,20 @@ export function PostInputBox() {
                     className="w-full aspect-[9/3] border-white border-2 bg-gray-800 text-white rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-white"
                 />
             </div>
+            {
+                isPostLoading ? (
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                ) : (
+                    <button
+                        onClick={handleClickSubmit}
+                        className="w-full bg-gray-900 rounded-lg text-white border-2 p-2 hover:bg-white hover:text-gray-900 transition-colors"
+                    >
+                        Post
+                    </button>
+                )
+            }
         </div>
     )
 }
