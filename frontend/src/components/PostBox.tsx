@@ -38,7 +38,7 @@ export function PostBox({ id, username, content, created_at }: PostBoxProps) {
                 tempArray.push(reply);
             });
             setReplies(tempArray);
-            console.log(tempArray);
+            console.log(replies);
         };
     
         fetchReplies();
@@ -50,11 +50,13 @@ export function PostBox({ id, username, content, created_at }: PostBoxProps) {
 
     return (
         <div className="items-center w-full p-10 flex flex-col gap-3">
-            <div className="flex flex-row gap-3 w-full items-center"> {/* photo and username, just use letter for now */}
-                <div className="p-3 h-12 aspect-square bg-orange-600 flex justify-center items-center rounded-lg border-2"> {/* photo */}
-                    <div className="text-2xl font-bold">{firstLetter}</div>
+            <div className="flex flex-row gap-3 w-full items-center">
+                <div className="flex flex-row gap-3 w-full items-center"> {/* photo and username, just use letter for now */}
+                    <div className="p-3 h-12 aspect-square bg-orange-600 flex justify-center items-center rounded-lg border-2"> {/* photo */}
+                        <div className="text-2xl font-bold">{firstLetter}</div>
+                    </div>
+                    <p className="text-white text-xl justify-start">{username}</p>
                 </div>
-                <p className="text-white text-xl justify-start">{username}</p>
             </div>
             <div className="w-full flex flex-col gap-3"> {/* post section */}
                 <p className="w-full text-white rounded-md text-lg">{content}</p>

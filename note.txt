@@ -1,10 +1,10 @@
 Main requirements:
-1. reactions = [Like, Love, HaHa, Sad, Angry] // no reaction
-2. each comment, one reaction or no reaction
+1. reactions = [Like, Love, HaHa, Sad, Angry] // no reaction DONE
+2. each comment, one reaction or no reaction DONE
 3. remove reaction
 4. allow to modify reaction
-5. comment's content support -> HTML content
-6. one comment, have MAXIMUM one level reply DONE
+5. comment's content support -> HTML content DONE
+6. one comment, have MAXIMUM one level reply DONE 
 7. allow to delete comment by owner and thread owner
 8. allow to edit comment by owner
 9. comments sorted by publish date
@@ -20,3 +20,17 @@ Deliverables:
 Addition:
 1. provide comment edit history feature
 2. design scalable architecture horizontally
+
+-> so actually make a login system would be ideal, just simple username and password
+-> now there is a state of the username -> assuming username is unique
+-> if that is done, then we can differentiate between the replies. 
+-> no in the ReplyBox, since we have the state of the user, we can set up the (one reply, one user, one reaction rule)
+-> make another api to grab whether the user have commented to the reply_id, -> put value in useState so that only one reaction is allowed
+    -> if yes, then the total count will inlcude the user, bold the reaction font
+    -> if no, then just normal font
+
+reaction change:
+-> if user click another reaction, then update the useState to the new reaction, fetch back to database a new one (to make it easy we can just change the reaction type no need to create a new one)
+-> if user click the same reaction, then update the useState to null, fetch back the composite primary key to delete, and delete the reply. 
+
+should be okay

@@ -25,7 +25,6 @@ function App() {
         tempArray.push(post);
       });
       setPosts(tempArray);
-      console.log(posts);
     };
 
     fetchPosts();
