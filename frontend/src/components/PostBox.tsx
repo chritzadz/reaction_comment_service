@@ -9,13 +9,16 @@ interface PostBoxProps {
     username: string;
     content: string;
     created_at: string;
+    onDelete: (id: string) => void;
 }
 
-export function PostBox({ id, username, content, created_at }: PostBoxProps) {
-
-
+export function PostBox({ id, username, content, created_at, onDelete }: PostBoxProps) {
     const handleReplyClick = () => {
         setOpenReply(!openReply);
+    }
+
+    const handleDeleteClick = () => {
+        onDelete(id);
     }
 
     useEffect(() => { 
@@ -42,21 +45,34 @@ export function PostBox({ id, username, content, created_at }: PostBoxProps) {
         };
     
         fetchReplies();
-      }, []);
+    }, []);
+
+    const handleHover = () => {
+        setIsHovering(!isHovering);
+    }
 
     const [openReply, setOpenReply] = useState(false);
     const [replies, setReplies] = useState<ReplyObject[]>([]);
+    const [isHovering, setIsHovering] = useState(false);
+
     const firstLetter: String = username[0].toUpperCase();
 
     return (
-        <div className="items-center w-full p-10 flex flex-col gap-3">
+        <div className="w-full p-10 flex flex-col gap-3" onMouseEnter={handleHover} onMouseLeave={handleHover}>
             <div className="flex flex-row gap-3 w-full items-center">
-                <div className="flex flex-row gap-3 w-full items-center"> {/* photo and username, just use letter for now */}
+                <div className="flex flex-row gap-3 w-1/2 items-center"> {/* photo and username, just use letter for now */}
                     <div className="p-3 h-12 aspect-square bg-orange-600 flex justify-center items-center rounded-lg border-2"> {/* photo */}
                         <div className="text-2xl font-bold">{firstLetter}</div>
                     </div>
                     <p className="text-white text-xl justify-start">{username}</p>
                 </div>
+                {isHovering && (username == "christianDumanauw") &&
+                    <div className="w-1/2 flex justify-end">
+                        <button className="text-white border-2 border-white rounded-lg p-2 hover:bg-white hover:text-black" onClick={handleDeleteClick}>
+                            Delete
+                        </button>
+                    </div>
+                }
             </div>
             <div className="w-full flex flex-col gap-3"> {/* post section */}
                 <p className="w-full text-white rounded-md text-lg">{content}</p>

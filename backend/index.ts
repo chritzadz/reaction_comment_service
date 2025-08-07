@@ -13,6 +13,7 @@ app.use(express.json());
 app.post('/api/get_posts', async (req, res) => {
     const task = await pool.query(`
         SELECT * FROM posts
+        ORDER BY created_at DESC;
         `);
     
     res.json({
@@ -79,9 +80,36 @@ app.post('/api/post_post', async (req, res) => {
         `, [username, content, currDate]
     );
 
+    const responseData = await pool.query(`
+        SELECT * FROM posts
+        ORDER BY created_at DESC;
+    `);
+
     res.json({
         status: 'OK',
-        data: JSON.stringify([])
+        data: JSON.stringify(
+            responseData.rows
+        )
+    });
+});
+
+app.post('/api/delete_post', async (req, res) => {
+    const { post_id } = req.body;
+
+    const task = await pool.query(`
+        DELETE FROM posts WHERE id = $1;
+    `, [post_id]);
+
+    const responseData = await pool.query(`
+        SELECT * FROM posts
+        ORDER BY created_at DESC;
+    `);
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify(
+            responseData.rows
+        )
     });
 });
 
