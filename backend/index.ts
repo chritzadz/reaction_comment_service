@@ -5,12 +5,6 @@ import { buildSchema } from 'graphql';
 import { ReplyObject } from './model/ReplyObject';
 import { ReactionObject } from './model/ReactionObject';
 
-interface ReactionRow {
-    reply_id: number;
-    username: string;
-    type: 'like' | 'love' | 'haha' | 'sad' | 'angry';
-}
-
 const app = express();
 const PORT = 3001;
 
@@ -74,83 +68,83 @@ app.post('/api/get_reactions', async (req, res) => {
     });
 });
 
+app.post('/api/post_post', async (req, res) => {
+    const { username, content } = req.body;
 
+    const data = new Date();
+    const currDate = `${data.getFullYear()}-${data.getMonth() + 1}-${data.getDate()}`;
+
+    const task = await pool.query(`
+        INSERT INTO posts (username, content, created_at) VALUES ($1, $2, $3) RETURNING *;
+        `, [username, content, currDate]
+    );
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
+
+app.post('/api/post_reply', async (req, res) => {
+    const { username, content, post_id } = req.body;
+
+    const postReply = await pool.query(`
+        INSERT INTO replies (username, content) VALUES ($1, $2) RETURNING *;
+    `, [username, content]);
+
+    const reply_id = postReply.rows[0].id;
+    const task = await pool.query(`
+        INSERT INTO post_have_replies (post_id, reply_id) VALUES ($1, $2);
+        `, [post_id, reply_id]
+    );
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
+
+app.post('/api/post_reaction', async (req, res) => {
+    const { username, type, reply_id } = req.body;
+    
+    const task = await pool.query(`
+        INSERT INTO reactions (username, type, reply_id) VALUES ($1, $2, $3);
+    `, [username, type, reply_id]);
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
+
+app.post('/api/delete_reaction', async (req, res) => {
+    const { username, reply_id } = req.body;
+
+    const task = await pool.query(`
+        DELETE FROM reactions WHERE username = $1 AND reply_id = $2;
+    `, [username, reply_id]);
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
+
+app.post('/api/alter_reaction', async (req, res) => {
+    const { username, type, reply_id } = req.body;
+    
+    const task = await pool.query(`
+        UPDATE reactions
+        SET type = $1
+        WHERE username = $2 AND reply_id = $3;
+    `, [type, username, reply_id]);
+
+    res.json({
+        status: 'OK',
+        data: JSON.stringify([])
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
-
-//comments
-let posts = [
-    {
-        id: 1,
-        username: 'user1',
-        content: 'This is a posts',
-        created_at: '2023-01-01'
-    },
-    {
-        id: 2,
-        username: 'user2',
-        content: 'This is another posts',
-        created_at: '2023-01-02'
-    }
-];
-
-//replied have a composite primary keys -> to normalize we could seperate a new table for replied with, reply id, i iwll do it.
-let post_have_replies = [
-    {
-        post_id: 1,
-        reply_id: 1
-    },
-    {
-        post_id: 1,
-        reply_id: 2
-    },
-    {
-        post_id: 2,
-        reply_id: 3
-    }
-];
-
-let replies = [
-    {
-        id: 1,
-        username: 'user1',
-        content: 'Amazing!'
-    },
-    {
-        id: 2,
-        username: 'user2',
-        content: 'Waw!'
-    },
-    {
-        id: 3,
-        username: 'user2',
-        content: 'Interesting!'
-    }
-];
-
-//6 types of reactions [like, love, haha, sad, angry] primary keys should be: reply_id and username since one user can only react once to a reply
-let reactions = [
-    {
-        reply_id: 1,
-        username: 'user1',
-        type: 'like',
-        
-    },
-    {
-        reply_id: 1,
-        username: 'user2',
-        type: 'like',
-    },
-    {
-        reply_id: 2,
-        username: 'user3',
-        type: 'love',
-    },
-    {
-        reply_id: 2,
-        username: 'user4',
-        type: 'sad',
-    },
-]
