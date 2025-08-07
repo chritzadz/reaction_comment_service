@@ -2,6 +2,14 @@ import express from 'express';
 import pool from './db/db';
 import { createHandler } from 'graphql-http/lib/use/express';
 import { buildSchema } from 'graphql';
+import { ReplyObject } from './model/ReplyObject';
+import { ReactionObject } from './model/ReactionObject';
+
+interface ReactionRow {
+    reply_id: number;
+    username: string;
+    type: 'like' | 'love' | 'haha' | 'sad' | 'angry';
+}
 
 const app = express();
 const PORT = 3001;
@@ -9,7 +17,9 @@ const PORT = 3001;
 app.use(express.json());
 
 app.post('/api/get_posts', async (req, res) => {
-    const task = await pool.query('SELECT * FROM posts');
+    const task = await pool.query(`
+        SELECT * FROM posts
+        `);
     
     res.json({
         status: 'OK',
@@ -19,48 +29,42 @@ app.post('/api/get_posts', async (req, res) => {
     });
 });
 
-app.post('/api/get_replies', (req, res) => {
+app.post('/api/get_replies', async (req, res) => {
     const { post_id } = req.body;
 
-    const replyIds = post_have_replies
-      .filter(relation => relation.post_id === post_id)
-      .map(relation => relation.reply_id);
-      
-    const repliesForPost = replies.filter(reply => replyIds.includes(reply.id));
+    const task = await pool.query<ReplyObject>(`
+        SELECT r.username, r.id, r.content FROM replies r 
+        INNER JOIN post_have_replies phr ON (r.id = phr.reply_id) 
+        INNER JOIN posts p ON (p.id = phr.post_id) 
+        WHERE post_id = $1;
+    `, [post_id]);
 
     res.json({
         status: 'OK',
         data: JSON.stringify(
-            repliesForPost
+            task.rows
         )
     });
 }); 
 
-app.post('/api/get_reactions', (req, res) => {
+app.post('/api/get_reactions', async (req, res) => {
     const { reply_id } = req.body;
-
-    console.log("reply_id", reply_id);
-    const reactionByReplyId = reactions.filter(reaction => reaction.reply_id === reply_id);
-    console.log(reactionByReplyId);
+    const reactionByReplyId = await pool.query<ReactionObject>(`
+        SELECT rea.reply_id, rea.username, rea.type FROM replies rep 
+        INNER JOIN reactions rea ON (rep.id = rea.reply_id)
+        WHERE rea.reply_id = $1;
+    `, [reply_id]);
 
     let reactionList = [0, 0, 0, 0, 0] // [like, love, haha, sad, angry]
-    for (let i = 0; i < reactionByReplyId.length; i++) {
-        if (reactionByReplyId[i].type === 'like'){
-            reactionList[0] += 1;
+    reactionByReplyId.rows.forEach(reaction => {
+        switch(reaction.type) {
+            case 'like': reactionList[0] += 1; break;
+            case 'love': reactionList[1] += 1; break;
+            case 'haha': reactionList[2] += 1; break;
+            case 'sad': reactionList[3] += 1; break;
+            case 'angry': reactionList[4] += 1; break;
         }
-        else if (reactionByReplyId[i].type === 'love'){
-            reactionList[1] += 1;
-        }
-        else if (reactionByReplyId[i].type === 'haha'){
-            reactionList[2] += 1;
-        }
-        else if (reactionByReplyId[i].type === 'sad'){
-            reactionList[3] += 1;
-        }
-        else if (reactionByReplyId[i].type === 'angry'){
-            reactionList[4] += 1;
-        }
-    }
+    });
 
     res.json({
         status: 'OK',
