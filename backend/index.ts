@@ -1,4 +1,5 @@
 import express from 'express';
+import pool from './db/db';
 import { createHandler } from 'graphql-http/lib/use/express';
 import { buildSchema } from 'graphql';
 
@@ -6,12 +7,14 @@ const app = express();
 const PORT = 3001;
 
 app.use(express.json());
-//there should be a database connection here, say PostgreSQL for example but I cannot set it up because of company policy, for this example I will just return a static response
-app.post('/api/get_posts', (req, res) => {
+
+app.post('/api/get_posts', async (req, res) => {
+    const task = await pool.query('SELECT * FROM posts');
+    
     res.json({
         status: 'OK',
         data: JSON.stringify(
-            posts
+            task.rows
         )
     });
 });
