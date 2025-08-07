@@ -9,14 +9,83 @@ interface ReplyBoxProps {
 export function ReplyBox({ id, username, content}: ReplyBoxProps) {
     const firstLetter: String = username[0].toUpperCase();
     const [reactionCount, setReactionCount] = useState<number[]>([0, 0, 0, 0, 0]); //{}
+    const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
     const [mouseOn, setMouseOn] = useState(false)
 
     const handleHover = () => {
         setMouseOn(!mouseOn);
     }
 
+    const handleAddReaction = async (type: string, reply_id: string, username: string) => {
+        const response = await fetch('/api/post_reaction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username,
+                type,
+                reply_id
+            }),
+        });
+
+        const data = await response.json();
+        if (data.status === 'OK') {
+            setReactionCount(JSON.parse(data.data));
+        }
+    }
+
+    const handleDeleteReaction = async (reply_id: string, username: string) => {
+        const response = await fetch('/api/delete_reaction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username,
+                reply_id
+            }),
+        });
+
+        const data = await response.json();
+        if (data.status === 'OK') {
+            setReactionCount(JSON.parse(data.data));
+        }
+    }
+
+    const handleAlterReaction = async (type: string, reply_id: string, username: string) => {
+        const response = await fetch('/api/alter_reaction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username,
+                type,
+                reply_id
+            }),
+        });
+
+        const data = await response.json();
+        if (data.status === 'OK') {
+            setReactionCount(JSON.parse(data.data));
+        }
+    }
+
     const onReactionClick = (type: string) => {
-        console.log(type)
+        if (selectedReaction === type) {
+            handleDeleteReaction(id, username);
+            setSelectedReaction(null);
+            return;
+        } 
+        else if (selectedReaction !== type && selectedReaction !== null) {
+            handleAlterReaction(type, id, username);
+            setSelectedReaction(type);
+        }
+        else if (selectedReaction === null) {
+            handleAddReaction(type, id, username);
+            setSelectedReaction(type);
+        }
     }
 
     useEffect(() => {
@@ -36,7 +105,24 @@ export function ReplyBox({ id, username, content}: ReplyBoxProps) {
             setReactionCount(JSON.parse(data.data));
         };
     
+        const fetchUserReaction = async () => {
+            const response = await fetch('/api/get_state_reply_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    reply_id: id,
+                    username
+                }),
+            });
+
+            const data = await response.json();
+            setSelectedReaction(JSON.parse(data.data));
+        };
+
         fetchReactions();
+        fetchUserReaction();
     }, []);
 
     return (
@@ -50,11 +136,65 @@ export function ReplyBox({ id, username, content}: ReplyBoxProps) {
                 </div>
                 { mouseOn &&
                     <div className="w-full w-1/2 h-10 mr-10 flex flex-row gap-5 text-white justify-end pl-2 pr-5">
-                        <span>{reactionCount[0]}<span onClick={() => {onReactionClick("like")}}>👍</span></span>
-                        <span>{reactionCount[1]}<span onClick={() => {onReactionClick("love")}}>❤️</span></span>
-                        <span>{reactionCount[2]}<span onClick={() => {onReactionClick("haha")}}>😂</span></span>
-                        <span>{reactionCount[3]}<span onClick={() => {onReactionClick("sad")}}>🙁</span></span>
-                        <span>{reactionCount[4]}<span onClick={() => {onReactionClick("angry")}}>🙂</span></span>
+                        {
+                            selectedReaction === "like" ? (
+                                <span className="font-bold">
+                                    {reactionCount[0]}<span onClick={() => {onReactionClick("like")}}>👍</span>
+                                </span>
+                            ) : (
+                                <span>
+                                    {reactionCount[0]}<span onClick={() => {onReactionClick("like")}}>👍</span>
+                                </span>
+                            )
+                        }
+
+                        {
+                            selectedReaction === "love" ? (
+                                <span className="font-bold">
+                                    {reactionCount[1]}<span onClick={() => {onReactionClick("love")}}>❤️</span>
+                                </span>
+                            ) : (
+                                <span>
+                                    {reactionCount[1]}<span onClick={() => {onReactionClick("love")}}>❤️</span>
+                                </span>
+                            )
+                        }
+
+                        {
+                            selectedReaction === "haha" ? (
+                                <span className="font-bold">
+                                    {reactionCount[2]}<span onClick={() => {onReactionClick("haha")}}>😂</span>
+                                </span>
+                            ) : (
+                                <span>
+                                    {reactionCount[2]}<span onClick={() => {onReactionClick("haha")}}>😂</span>
+                                </span>
+                            )
+                        }
+
+                        {
+                            selectedReaction === "sad" ? (
+                                <span className="font-bold">
+                                    {reactionCount[3]}<span onClick={() => {onReactionClick("sad")}}>🙁</span>
+                                </span>
+                            ) : (
+                                <span>
+                                    {reactionCount[3]}<span onClick={() => {onReactionClick("sad")}}>🙁</span>
+                                </span>
+                            )
+                        }
+
+                        {
+                            selectedReaction === "angry" ? (
+                                <span className="font-bold">
+                                    {reactionCount[4]}<span onClick={() => {onReactionClick("angry")}}>😡</span>
+                                </span>
+                            ) : (
+                                <span>
+                                    {reactionCount[4]}<span onClick={() => {onReactionClick("angry")}}>😡</span>
+                                </span>
+                            )
+                        }
                     </div>
                 }
             </div>

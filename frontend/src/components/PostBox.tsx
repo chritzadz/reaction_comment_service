@@ -41,7 +41,6 @@ export function PostBox({ id, username, content, created_at, onDelete }: PostBox
                 tempArray.push(reply);
             });
             setReplies(tempArray);
-            console.log(replies);
         };
     
         fetchReplies();
