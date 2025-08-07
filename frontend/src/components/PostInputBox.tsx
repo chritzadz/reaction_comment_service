@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 interface PostInputBoxProps {
-    handlePostSubmit: (content: string, username: string) => void;
+    handlePostSubmit: (content: string, username: string) => void,
+    username: string
 }
 
-export function PostInputBox({ handlePostSubmit }: PostInputBoxProps) {
+export function PostInputBox({ handlePostSubmit, username }: PostInputBoxProps) {
     const [postSectionValue, setPostSectionValue] = useState("");
     const [isPostLoading, setIsPostLoading] = useState(false);
 
-    const username: string = "christianDumanauw";
     const firstLetter: string = username[0].toUpperCase();
 
     const handleClickSubmit = async () => {

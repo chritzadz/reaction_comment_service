@@ -7,6 +7,10 @@ CREATE TABLE posts (
     created_at DATE NOT NULL
 );
 
+CREATE TABLE users (
+    username VARCHAR(255) PRIMARY KEY
+);
+
 CREATE TABLE post_have_replies (
     post_id INT NOT NULL,
     reply_id INT NOT NULL,
@@ -48,3 +52,6 @@ INSERT INTO replies (id, username, content) VALUES
 (2, 'user2', 'Waw!'),
 (3, 'user2', 'Interesting!');
 
+INSERT INTO users (username) VALUES
+('user1'),
+('user2');
