@@ -31,21 +31,15 @@ CREATE TABLE reactions (
 );
 
 -- some basic DML, for set up
+INSERT INTO posts (username, content, created_at) VALUES 
+('user1', 'This is a posts', '2023-01-01'),
+('user2', 'This is another posts', '2023-01-02');
 
-INSERT INTO posts (username, content, created_at) 
-VALUES ('user1', 'This is a posts', '2023-01-01');
 
-INSERT INTO posts (username, content, created_at) 
-VALUES ('user2', 'This is another posts', '2023-01-02');
-
-INSERT INTO post_have_replies (post_id, reply_id) 
-VALUES (1, 1);
-
-INSERT INTO post_have_replies (post_id, reply_id) 
-VALUES (1, 2);
-
-INSERT INTO post_have_replies (post_id, reply_id) 
-VALUES (2, 3);
+INSERT INTO post_have_replies (post_id, reply_id) VALUES
+(1, 1),
+(1, 2),
+(2, 3);
 
 INSERT INTO replies (id, username, content) VALUES
 (1, 'user1', 'Amazing!'),
