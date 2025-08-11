@@ -9,12 +9,15 @@ interface PostBoxProps {
     username: string;
     content: string;
     created_at: string;
+    curr_user: string;
     onDelete: (id: string) => void;
+    onReplyClick: () => void;
 }
 
-export function PostBox({ id, username, content, created_at, onDelete }: PostBoxProps) {
+export function PostBox({ id, username, content, created_at, curr_user, onDelete, onReplyClick }: PostBoxProps) {
     const handleReplyClick = () => {
-        setOpenReply(!openReply);
+        setOpenReply(!openReply)
+        onReplyClick();
     }
 
     const handleDeleteClick = () => {
@@ -65,7 +68,7 @@ export function PostBox({ id, username, content, created_at, onDelete }: PostBox
                     </div>
                     <p className="text-white text-xl justify-start">{username}</p>
                 </div>
-                {isHovering && (username == "christianDumanauw") &&
+                {isHovering && (username === curr_user) &&
                     <div className="w-1/2 flex justify-end">
                         <button className="text-white border-2 border-white rounded-lg p-2 hover:bg-white hover:text-black" onClick={handleDeleteClick}>
                             Delete
