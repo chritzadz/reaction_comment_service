@@ -4,7 +4,6 @@ import { PostInputBox } from "../components/PostInputBox"
 import type { PostObject } from '../model/PostObject';
 import { Spinner } from 'react-bootstrap';
 import { useParams } from "react-router";
-import { ReplyInputBox } from "../components/ReplyInputBox";
 
 function Home() {
   const [posts, setPosts] = useState<PostObject[]>([]);
@@ -82,7 +81,7 @@ function Home() {
   }, []);
 
   return (
-    <>
+    <div className="relative">
       <div className="justify-center items-center flex flex-row w-screen min-h-screen bg-gray-900 z-0">
         <div className="comment-box w-1/5 max-lg:w-1/5 max-md:w-1/5 max-sm:w-0 h-full">
         </div>
@@ -97,7 +96,7 @@ function Home() {
             }
             {posts.map((post: PostObject) => (
               <div key={post.id}>
-                <PostBox key={post.id} id={post.id} username={post.username} content={post.content} created_at={post.created_at} curr_user={username} onDelete={handleDeletePost} onReplyClick={handleReplyClick} />
+                <PostBox key={post.id} id={post.id} username={post.username} content={post.content} created_at={post.created_at} curr_user={username} onDelete={handleDeletePost} onReplyClick={() => handleReplyClick()} />
                 <hr className="w-full bg-white border-1"></hr>
               </div>
             ))}
@@ -106,12 +105,7 @@ function Home() {
         <div className="comment-box w-1/5 max-lg:w-1/5 max-md:w-1/5 max-sm:w-0 h-full">
         </div>
       </div>
-      { openReplyBox && (
-        <div className="w-full bg-gray-400 bg-opacity-50 z-10">
-          <ReplyInputBox />
-        </div>
-      )}
-    </>
+    </div>
   )
 }
 

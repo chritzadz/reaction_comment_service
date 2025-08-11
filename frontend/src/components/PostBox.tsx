@@ -3,6 +3,7 @@ import heartIcon from '../assets/heart.png';
 import chatBubble from '../assets/chat-bubble.png';
 import type { ReplyObject } from '../model/ReplyObject'
 import { ReplyBox } from './ReplyBox'
+import { ReplyInputBox } from "./ReplyInputBox";
 
 interface PostBoxProps {
     id: string;
@@ -17,12 +18,37 @@ interface PostBoxProps {
 export function PostBox({ id, username, content, created_at, curr_user, onDelete, onReplyClick }: PostBoxProps) {
     const handleReplyClick = () => {
         setOpenReply(!openReply)
-        onReplyClick();
     }
 
     const handleDeleteClick = () => {
         onDelete(id);
     }
+
+    const handleReplySubmit = async (content: string) => {
+        const response = await fetch('/api/post_reply', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                post_id: id,
+                username: curr_user,
+                content
+            }),
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'OK') {
+            let tempArray: ReplyObject[] = []  
+            JSON.parse(data.data).map((reply: ReplyObject) => {
+                tempArray.push(reply);
+            });
+
+            setReplies(tempArray);
+        }
+    }
+
 
     useEffect(() => { 
         const fetchReplies = async () => {
@@ -96,6 +122,7 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
             </div>
             {openReply && 
                 <div className="w-full flex flex-col gap-3"> {/* replies section */}
+                    <ReplyInputBox handleReplySubmit={handleReplySubmit} />
                     {replies.map((reply: ReplyObject) => (
                         <div>
                             <ReplyBox key={reply.id} id={reply.id} username={reply.username} content={reply.content} />

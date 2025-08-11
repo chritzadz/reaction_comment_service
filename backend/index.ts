@@ -142,9 +142,14 @@ app.post('/api/post_reply', async (req, res) => {
         `, [post_id, reply_id]
     );
 
+    const responseData = await pool.query(`
+        SELECT * FROM replies
+        WHERE post_id = $1;
+    `, [post_id]);
+
     res.json({
         status: 'OK',
-        data: JSON.stringify([])
+        data: JSON.stringify(responseData.rows)
     });
 });
 
