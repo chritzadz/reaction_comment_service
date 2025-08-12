@@ -5,12 +5,14 @@ const router = Router();
 const controller = new ReactionController();
 
 
-router.get('/posts/:reply_id', controller.getReactionsByReply.bind(controller));
+router.get('/reactions/:reply_id', controller.getReactionsByReply.bind(controller));
 
-router.post('/posts', controller.postReaction.bind(controller));
+router.post('/reactions', controller.postReaction.bind(controller));
 
-router.delete('/posts/:id', controller.deleteReaction.bind(controller));
+router.delete('/reactions/:id', controller.deleteReaction.bind(controller));
 
-router.patch('posts', controller.alterReaction.bind(controller));
+router.patch('/reactions', controller.alterReaction.bind(controller));
 
-export { router as PostRoutes }
+router.get('/reactions/:reply_id/:username', controller.getUserReactionState.bind(controller))
+
+export { router as ReactionRoutes }

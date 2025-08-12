@@ -10,8 +10,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //routes
-app.use('/api', PostRoutes); //define later
-app.use('/api', ReplyRoutes); //this too
+app.use('/api', PostRoutes);
+app.use('/api', ReplyRoutes);
 app.use('/api', ReactionRoutes);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

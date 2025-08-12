@@ -35,8 +35,9 @@ export class ReactionController {
     }
 
     public async getUserReactionState(req: Request, res: Response): Promise<void> {
-        const { reply_id, username } = req.body;
-        const reaction = await this.service.getUserReactionState(reply_id, username);
+        const { reply_id, username } = req.params;
+        const task = await this.service.getUserReactionState(reply_id, username);
+        res.status(201).json(task);
     }
 }
 

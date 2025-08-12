@@ -16,18 +16,18 @@ export class PostController {
 
     public async getPosts(req: Request, res: Response): Promise<void> {
         const posts = await this.postService.getAllPosts();
-        res.json(posts);
+        res.status(201).json(posts);
     }
 
     public async postPost(req: Request, res: Response): Promise<void> {
-        const newPost = await this.postService.postPost(req.body);
-        res.status(201).json(newPost);
+        const posts = await this.postService.postPost(req.body);
+        res.status(200).json(posts);
     }
 
     public async deletePost(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
-        await this.postService.deletePost(id);
-        res.status(204).send();
+        const posts = await this.postService.deletePost(id);
+        res.status(201).json(posts);
     }
 }
 
