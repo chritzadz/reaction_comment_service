@@ -122,7 +122,10 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
             </div>
             {openReply && 
                 <div className="w-full flex flex-col gap-3"> {/* replies section */}
-                    <ReplyInputBox handleReplySubmit={handleReplySubmit} />
+                    <div>
+                        <ReplyInputBox handleReplySubmit={handleReplySubmit} />
+                        <hr className="w-full bg-white border-1 mt-2"></hr>
+                    </div>
                     {replies.map((reply: ReplyObject) => (
                         <div>
                             <ReplyBox key={reply.id} id={reply.id} username={reply.username} content={reply.content} />
