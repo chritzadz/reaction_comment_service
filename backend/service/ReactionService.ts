@@ -29,49 +29,51 @@ export class ReactionService {
         }
     }
     
-    async post(reaction: Reaction): Promise<Reaction[]> {
+    async post(reaction: Reaction): Promise<number[]> {
         try {
+            console.log(reaction)
             const task = await this.repository.post(reaction);
-            const reactions = await this.repository.getAllByReply(reaction.reply_id);
+            const reactions = await this.getAllByReply(reaction.reply_id);
             return reactions;
         } catch (error) {
             throw new Error("Error posting reaction");
         }
     }
 
-    async delete(reaction: Reaction): Promise<Reaction[]> {
+    async delete(reply_id: string, username: string): Promise<number[]> {
         try {
-            const task = await this.repository.delete(reaction);
-            const reactions = await this.repository.getAllByReply(reaction.reply_id);
+            const task = await this.repository.delete(reply_id, username);
+            const reactions = await this.getAllByReply(reply_id);
             return reactions;
         } catch (error) {
-            throw new Error("Error posting reaction");
+            throw new Error("Error deleting reaction");
         }
     }
 
-    async alter(reaction: Reaction): Promise<Reaction> {
+    async alter(reply_id: string, username: string, newType: string): Promise<number[]> {
         try {
-            const task = await this.repository.alter(reaction);
-            return task;
+            const task = await this.repository.alter(reply_id, username, newType);
+            const reactions = await this.getAllByReply(reply_id);
+            return reactions;
         } catch (error) {
-            throw new Error("Error posting reaction");
+            throw new Error("Error altering reaction" + error);
         }
     }
 
-    async getUserReactionState(reply_id: string, username: string): Promise<boolean> {
+    async getUserReactionState(reply_id: string, username: string): Promise<string> {
         try {
             const task = await this.repository.getAllByReply(reply_id);
 
             if (task.length == 0){
-                return false;
+                return "";
             }
 
             for (const reaction of task){
                 if (reaction.username == username){
-                    return true;
+                    return reaction.type;
                 }
             }
-            return false;
+            return "";
         } catch (error) {
             throw new Error("Error posting reaction");
         }

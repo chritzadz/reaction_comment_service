@@ -9,9 +9,9 @@ router.get('/reactions/:reply_id', controller.getReactionsByReply.bind(controlle
 
 router.post('/reactions', controller.postReaction.bind(controller));
 
-router.delete('/reactions/:id', controller.deleteReaction.bind(controller));
+router.delete('/reactions/:reply_id/:username', controller.deleteReaction.bind(controller));
 
-router.patch('/reactions', controller.alterReaction.bind(controller));
+router.patch('/reactions/:reply_id/:username', controller.alterReaction.bind(controller));
 
 router.get('/reactions/:reply_id/:username', controller.getUserReactionState.bind(controller))
 

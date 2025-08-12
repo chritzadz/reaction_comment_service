@@ -15,6 +15,7 @@ export class ReactionController {
 
     public async postReaction(req: Request, res: Response): Promise<void> {
         const reactions = await this.service.post(req.body);
+        console.log(reactions);
         res.status(201).json(reactions);
     }
 
@@ -25,12 +26,15 @@ export class ReactionController {
     }
 
     public async deleteReaction(req: Request, res: Response): Promise<void> {
-        const reactions = await this.service.delete(req.body);
+        const { reply_id, username } = req.params;
+        const reactions = await this.service.delete(reply_id, username);
         res.status(201).json(reactions);
     }
 
     public async alterReaction(req: Request, res: Response): Promise<void> {
-        const reactions = await this.service.alter(req.body);
+        const { reply_id, username } = req.params;
+        console.log(req.body);
+        const reactions = await this.service.alter(reply_id, username, req.body.type);
         res.status(201).json(reactions);
     }
 

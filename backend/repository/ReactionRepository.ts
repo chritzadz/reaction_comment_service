@@ -21,22 +21,22 @@ export class ReactionRepository {
         return task.rows[0];
     }
 
-    async delete(reaction: Reaction): Promise<Reaction> {
+    async delete(reply_id: string, username: string): Promise<Reaction> {
         const task = await pool.query(`
             DELETE FROM reactions WHERE username = $1 AND reply_id = $2 RETURNING *;
-        `, [reaction.username, reaction.reply_id]);
+        `, [username, reply_id]);
 
         return task.rows[0];
     }
 
-    async alter(reaction: Reaction): Promise<Reaction> {
+    async alter(reply_id: String, username: String, newType: string): Promise<Reaction> {
         const task = await pool.query(
         `
         UPDATE reactions
         SET type = $1
         WHERE username = $2 AND reply_id = $3
         RETURNING *;
-        `, [reaction.type, reaction.username, reaction.reply_id]);
+        `, [newType, username, reply_id]);
 
         return task.rows[0];
     }

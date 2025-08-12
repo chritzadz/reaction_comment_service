@@ -25,7 +25,7 @@ CREATE TABLE replies (
 
 CREATE TABLE reactions (
     reply_id INT NOT NULL,
-    type VARCHAR(255) NOT NULL CHECK (type IN ('like', 'love', 'haha', 'sad', 'angry')),
+    type VARCHAR(255) NOT NULL CHECK (type IN ('like', 'love', 'haha', 'sad', 'angry', '')),
     username VARCHAR(255) NOT NULL,
     PRIMARY KEY(reply_id, username)
 );

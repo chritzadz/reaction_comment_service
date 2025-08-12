@@ -1,15 +1,29 @@
 import { useEffect, useState } from "react";
+import type { ReactionObject } from "../model/ReactionObject";
 
 interface ReplyBoxProps {
     id: string;
     username: string;
     content: string;
+    curr_user: string;
 }
 
-export function ReplyBox({ id, username, content}: ReplyBoxProps) {
+class Reaction implements ReactionObject{
+    reply_id: string;
+    type: string;
+    username: string;
+    
+    constructor(reply_id: string, type: string, username: string){
+        this.reply_id = reply_id;
+        this.type = type;
+        this.username =username;
+    }
+}
+
+export function ReplyBox({ id, username, content, curr_user}: ReplyBoxProps) {
     const firstLetter: String = username[0].toUpperCase();
-    const [reactionCount, setReactionCount] = useState<number[]>([0, 0, 0, 0, 0]); //{}
-    const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
+    const [reactionCount, setReactionCount] = useState<number[]>([0, 0, 0, 0, 0]);
+    const [selectedReaction, setSelectedReaction] = useState<string>(""); // "" is null
     const [mouseOn, setMouseOn] = useState(false)
 
     const handleHover = () => {
@@ -17,72 +31,57 @@ export function ReplyBox({ id, username, content}: ReplyBoxProps) {
     }
 
     const handleAddReaction = async (type: string, reply_id: string, username: string) => {
-        const response = await fetch('/api/post_reaction', {
+        const response = await fetch('/api/reactions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                username,
-                type,
-                reply_id
-            }),
+            body: JSON.stringify(new Reaction(reply_id, type, curr_user)),
         });
 
         const data = await response.json();
-        if (data.status === 'OK') {
-            setReactionCount(JSON.parse(data.data));
-        }
+        console.log(data)
+        setReactionCount(data);
     }
 
-    const handleDeleteReaction = async (reply_id: string, username: string) => {
-        const response = await fetch('/api/delete_reaction', {
-            method: 'POST',
+    const handleDeleteReaction = async () => {
+        const response = await fetch(`/api/reactions/${id}/${curr_user}`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username,
-                reply_id
-            }),
+            }
         });
 
         const data = await response.json();
-        if (data.status === 'OK') {
-            setReactionCount(JSON.parse(data.data));
-        }
+        setReactionCount(data);
     }
 
-    const handleAlterReaction = async (type: string, reply_id: string, username: string) => {
-        const response = await fetch('/api/alter_reaction', {
-            method: 'POST',
+    const handleAlterReaction = async (type: string) => {
+        const response = await fetch(`/api/reactions/${id}/${curr_user}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                username,
-                type,
-                reply_id
+                type
             }),
         });
 
         const data = await response.json();
-        if (data.status === 'OK') {
-            setReactionCount(JSON.parse(data.data));
-        }
+        setReactionCount(data);
     }
 
     const onReactionClick = (type: string) => {
         if (selectedReaction === type) {
-            handleDeleteReaction(id, username);
-            setSelectedReaction(null);
+            handleDeleteReaction();
+            setSelectedReaction("");
             return;
         } 
-        else if (selectedReaction !== type && selectedReaction !== null) {
-            handleAlterReaction(type, id, username);
+        else if (selectedReaction !== type && selectedReaction !== "") {
+            handleAlterReaction(type);
             setSelectedReaction(type);
         }
-        else if (selectedReaction === null) {
+        else if (selectedReaction === "") {
             handleAddReaction(type, id, username);
             setSelectedReaction(type);
         }
@@ -90,35 +89,26 @@ export function ReplyBox({ id, username, content}: ReplyBoxProps) {
 
     useEffect(() => {
         const fetchReactions = async () => {
-            const response = await fetch('/api/get_reactions', {
-                method: 'POST',
+            const response = await fetch(`/api/reactions/${id}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({  
-                    reply_id: id
-                }),
+                }
             });
         
             const data = await response.json();
-            console.log(JSON.parse(data.data))
-            setReactionCount(JSON.parse(data.data));
+            setReactionCount(data);
         };
     
         const fetchUserReaction = async () => {
-            const response = await fetch('/api/get_state_reply_user', {
-                method: 'POST',
+            const response = await fetch(`/api/reactions/${id}/${curr_user}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    reply_id: id,
-                    username
-                }),
+                }
             });
-
             const data = await response.json();
-            setSelectedReaction(JSON.parse(data.data));
+            setSelectedReaction(data);
         };
 
         fetchReactions();

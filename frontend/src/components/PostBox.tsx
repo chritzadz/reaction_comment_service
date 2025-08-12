@@ -12,7 +12,6 @@ interface PostBoxProps {
     created_at: string;
     curr_user: string;
     onDelete: (id: string) => void;
-    onReplyClick: () => void;
 }
 
 class Reply implements ReplyObject{
@@ -27,7 +26,7 @@ class Reply implements ReplyObject{
     }
 }
 
-export function PostBox({ id, username, content, created_at, curr_user, onDelete, onReplyClick }: PostBoxProps) {
+export function PostBox({ id, username, content, created_at, curr_user, onDelete }: PostBoxProps) {
     const handleReplyClick = () => {
         setOpenReply(!openReply)
     }
@@ -116,8 +115,8 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
                         <hr className="w-full bg-white border-1 mt-2"></hr>
                     </div>
                     {replies.map((reply: ReplyObject) => (
-                        <div>
-                            <ReplyBox key={reply.id} id={reply.id} username={reply.username} content={reply.content} />
+                        <div key={reply.id}>
+                            <ReplyBox id={reply.id} username={reply.username} content={reply.content} curr_user={curr_user} />
                             <hr className="w-full bg-white border-1 mt-2 mb-2"></hr>
                         </div>
                     ))}
