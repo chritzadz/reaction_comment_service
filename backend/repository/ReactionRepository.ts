@@ -15,7 +15,7 @@ export class ReactionRepository {
 
     async post(reaction: Reaction): Promise<Reaction> {
         const task = await pool.query(`
-            INSERT INTO reactions (username, type, reply_id) VALUES ($1, $2, $3) RETURN *;
+            INSERT INTO reactions (username, type, reply_id) VALUES ($1, $2, $3) RETURNING *;
         `, [reaction.username, reaction.type, reaction.reply_id]);
 
         return task.rows[0];
@@ -23,7 +23,7 @@ export class ReactionRepository {
 
     async delete(reaction: Reaction): Promise<Reaction> {
         const task = await pool.query(`
-            DELETE FROM reactions WHERE username = $1 AND reply_id = $2 RETURN *;
+            DELETE FROM reactions WHERE username = $1 AND reply_id = $2 RETURNING *;
         `, [reaction.username, reaction.reply_id]);
 
         return task.rows[0];
@@ -35,7 +35,7 @@ export class ReactionRepository {
         UPDATE reactions
         SET type = $1
         WHERE username = $2 AND reply_id = $3
-        RETURN *;
+        RETURNING *;
         `, [reaction.type, reaction.username, reaction.reply_id]);
 
         return task.rows[0];

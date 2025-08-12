@@ -15,6 +15,18 @@ interface PostBoxProps {
     onReplyClick: () => void;
 }
 
+class Reply implements ReplyObject{
+    id: string;
+    username: string;
+    content: string;
+    
+    constructor(id: string, username: string, content: string){
+        this.id = id;
+        this.username = username;
+        this.content = content;
+    }
+}
+
 export function PostBox({ id, username, content, created_at, curr_user, onDelete, onReplyClick }: PostBoxProps) {
     const handleReplyClick = () => {
         setOpenReply(!openReply)
@@ -24,65 +36,42 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
         onDelete(id);
     }
 
+    const handleHover = () => {
+        setIsHovering(!isHovering);
+    }
+
     const handleReplySubmit = async (content: string) => {
-        const response = await fetch('/api/post_reply', {
+        const response = await fetch(`/api/replies/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                post_id: id,
-                username: curr_user,
-                content
-            }),
+            body: JSON.stringify( new Reply("", username, content) ),
         });
 
         const data = await response.json();
-
-        if (data.status === 'OK') {
-            let tempArray: ReplyObject[] = []  
-            JSON.parse(data.data).map((reply: ReplyObject) => {
-                tempArray.push(reply);
-            });
-
-            setReplies(tempArray);
-        }
+        setReplies(data);
     }
 
 
     useEffect(() => { 
         const fetchReplies = async () => {
-            const response = await fetch('/api/get_replies', {
-                method: 'POST',
+            const response = await fetch(`/api/replies/${id}`, {
+                method: 'GET',
                 headers: {
                 'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({  
-                    post_id: id
-                }),
+                }
             });
         
             const data = await response.json();
-            
-            let tempArray: ReplyObject[] = []
-          
-            JSON.parse(data.data).map((reply: ReplyObject) => {
-                tempArray.push(reply);
-            });
-            setReplies(tempArray);
+            setReplies(data);
         };
-    
         fetchReplies();
     }, []);
-
-    const handleHover = () => {
-        setIsHovering(!isHovering);
-    }
 
     const [openReply, setOpenReply] = useState(false);
     const [replies, setReplies] = useState<ReplyObject[]>([]);
     const [isHovering, setIsHovering] = useState(false);
-
     const firstLetter: String = username[0].toUpperCase();
 
     return (

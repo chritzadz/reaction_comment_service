@@ -27,31 +27,30 @@ export class ReplyService {
             const replies = await this.repository.getAll();
             return replies
         } catch (error) {
-            throw new Error("Error get all replies");
+            throw new Error("Error get all replies: "+ error);
         }
     }
 
     async getRepliesByPost(post_id: string): Promise<Reply[]> {
         try {
-            const replies = await this.repository.getAll();
+            const replies = await this.repository.getByPost(post_id);
             return replies
         } catch (error) {
-            throw new Error("Error get all replies");
+            throw new Error("Error get all replies: " + error);
         }
     }
 
     async postReply(reply: Reply, post_id: string): Promise<Reply[]> {
         try {
             const task = await this.repository.post(reply);
-
             const postHaveReplies = new PostHaveRepliesObject(post_id, task.id);
 
             const task1 = await this.linker.post(postHaveReplies);
-            const replies = await this.repository.getAll();
+            const replies = await this.repository.getByPost(post_id);
             
             return replies;
         } catch (error) {
-            throw new Error("Error posting post");
+            throw new Error("Error posting reply: " + error);
         }
     }
 }

@@ -9,6 +9,7 @@ const controller = new ReplyController();
 */
 
 router.get('/replies', controller.getReplies.bind(controller));
+router.get('/replies/:post_id', controller.getRepliesByPost.bind(controller));
 router.post('/replies/:post_id', controller.postReply.bind(controller));
 
 export { router as ReplyRoutes }

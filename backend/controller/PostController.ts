@@ -7,7 +7,7 @@ export class PostController {
     /*
     1. get_posts
     2. post_post
-    3. delete_post
+    3. delete_posta
     */
 
     constructor() {

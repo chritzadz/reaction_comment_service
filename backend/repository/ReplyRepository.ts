@@ -12,7 +12,7 @@ export class ReplyRepository {
         return task.rows;
     }
 
-    async getById(): Promise<Reply[]> {
+    async getByPost(post_id: string): Promise<Reply[]> {
         const task = await pool.query(
             `
             SELECT r.username, r.id, r.content FROM replies r 
@@ -20,7 +20,7 @@ export class ReplyRepository {
             INNER JOIN posts p ON (p.id = phr.post_id) 
             WHERE post_id = $1;
             `
-        );
+        , [post_id]);
         return task.rows;
     }
 
