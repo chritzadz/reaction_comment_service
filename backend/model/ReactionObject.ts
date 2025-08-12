@@ -1,4 +1,4 @@
-export interface ReactionObject {
+export interface Reaction {
    reply_id: string;
    username: string;
    type: string;

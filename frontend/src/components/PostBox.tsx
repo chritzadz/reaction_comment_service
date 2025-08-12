@@ -12,10 +12,21 @@ interface PostBoxProps {
     created_at: string;
     curr_user: string;
     onDelete: (id: string) => void;
-    onReplyClick: () => void;
 }
 
-export function PostBox({ id, username, content, created_at, curr_user, onDelete, onReplyClick }: PostBoxProps) {
+class Reply implements ReplyObject{
+    id: string;
+    username: string;
+    content: string;
+    
+    constructor(id: string, username: string, content: string){
+        this.id = id;
+        this.username = username;
+        this.content = content;
+    }
+}
+
+export function PostBox({ id, username, content, created_at, curr_user, onDelete }: PostBoxProps) {
     const handleReplyClick = () => {
         setOpenReply(!openReply)
     }
@@ -24,65 +35,42 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
         onDelete(id);
     }
 
+    const handleHover = () => {
+        setIsHovering(!isHovering);
+    }
+
     const handleReplySubmit = async (content: string) => {
-        const response = await fetch('/api/post_reply', {
+        const response = await fetch(`/api/replies/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                post_id: id,
-                username: curr_user,
-                content
-            }),
+            body: JSON.stringify( new Reply("", username, content) ),
         });
 
         const data = await response.json();
-
-        if (data.status === 'OK') {
-            let tempArray: ReplyObject[] = []  
-            JSON.parse(data.data).map((reply: ReplyObject) => {
-                tempArray.push(reply);
-            });
-
-            setReplies(tempArray);
-        }
+        setReplies(data);
     }
 
 
     useEffect(() => { 
         const fetchReplies = async () => {
-            const response = await fetch('/api/get_replies', {
-                method: 'POST',
+            const response = await fetch(`/api/replies/${id}`, {
+                method: 'GET',
                 headers: {
                 'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({  
-                    post_id: id
-                }),
+                }
             });
         
             const data = await response.json();
-            
-            let tempArray: ReplyObject[] = []
-          
-            JSON.parse(data.data).map((reply: ReplyObject) => {
-                tempArray.push(reply);
-            });
-            setReplies(tempArray);
+            setReplies(data);
         };
-    
         fetchReplies();
     }, []);
-
-    const handleHover = () => {
-        setIsHovering(!isHovering);
-    }
 
     const [openReply, setOpenReply] = useState(false);
     const [replies, setReplies] = useState<ReplyObject[]>([]);
     const [isHovering, setIsHovering] = useState(false);
-
     const firstLetter: String = username[0].toUpperCase();
 
     return (
@@ -127,8 +115,8 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
                         <hr className="w-full bg-white border-1 mt-2"></hr>
                     </div>
                     {replies.map((reply: ReplyObject) => (
-                        <div>
-                            <ReplyBox key={reply.id} id={reply.id} username={reply.username} content={reply.content} />
+                        <div key={reply.id}>
+                            <ReplyBox id={reply.id} username={reply.username} content={reply.content} curr_user={curr_user} />
                             <hr className="w-full bg-white border-1 mt-2 mb-2"></hr>
                         </div>
                     ))}
