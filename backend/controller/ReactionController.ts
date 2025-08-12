@@ -33,7 +33,6 @@ export class ReactionController {
 
     public async alterReaction(req: Request, res: Response): Promise<void> {
         const { reply_id, username } = req.params;
-        console.log(req.body);
         const reactions = await this.service.alter(reply_id, username, req.body.type);
         res.status(201).json(reactions);
     }
