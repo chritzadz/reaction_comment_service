@@ -142,9 +142,14 @@ app.post('/api/post_reply', async (req, res) => {
         `, [post_id, reply_id]
     );
 
+    const responseData = await pool.query(`
+        SELECT r.username, r.id, r.content FROM replies r INNER JOIN post_have_replies p ON r.id = p.reply_id
+        WHERE p.post_id = $1;
+    `, [post_id]);
+
     res.json({
         status: 'OK',
-        data: JSON.stringify([])
+        data: JSON.stringify(responseData.rows)
     });
 });
 
