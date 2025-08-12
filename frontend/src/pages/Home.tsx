@@ -22,11 +22,6 @@ function Home() {
   const [posts, setPosts] = useState<PostObject[]>([]);
   let { username: usernameParam } = useParams();
   const [username, setUsername] = useState<string>(usernameParam || "");
-  const [openReplyBox, setOpenReplyBox] = useState<boolean>(false);
-
-  const handleReplyClick = () => {
-    setOpenReplyBox(!openReplyBox);
-  }
 
   const handlePostSubmit = async (content: string, username: string) => {
     const response = await fetch('/api/posts', {
@@ -84,7 +79,7 @@ function Home() {
             }
             {posts.map((post: Post) => (
               <div key={post.id}>
-                <PostBox key={post.id} id={post.id} username={post.username} content={post.content} created_at={post.created_at} curr_user={username} onDelete={handleDeletePost} onReplyClick={() => handleReplyClick()} />
+                <PostBox key={post.id} id={post.id} username={post.username} content={post.content} created_at={post.created_at} curr_user={username} onDelete={handleDeletePost} />
                 <hr className="w-full bg-white border-1"></hr>
               </div>
             ))}
