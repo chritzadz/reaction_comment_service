@@ -30,13 +30,13 @@ export function ReplyBox({ id, username, content, curr_user}: ReplyBoxProps) {
         setMouseOn(!mouseOn);
     }
 
-    const handleAddReaction = async (type: string, reply_id: string, username: string) => {
+    const handleAddReaction = async (type: string) => {
         const response = await fetch('/api/reactions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(new Reaction(reply_id, type, curr_user)),
+            body: JSON.stringify(new Reaction(id, type, curr_user)),
         });
 
         const data = await response.json();
@@ -82,7 +82,7 @@ export function ReplyBox({ id, username, content, curr_user}: ReplyBoxProps) {
             setSelectedReaction(type);
         }
         else if (selectedReaction === "") {
-            handleAddReaction(type, id, username);
+            handleAddReaction(type);
             setSelectedReaction(type);
         }
     }
