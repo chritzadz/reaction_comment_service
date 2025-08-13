@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import heartIcon from '../assets/heart.png';
-import chatBubble from '../assets/chat-bubble.png';
 import type { ReplyObject } from '../model/ReplyObject'
 import { ReplyBox } from './ReplyBox'
 import { ReplyInputBox } from "./ReplyInputBox";
