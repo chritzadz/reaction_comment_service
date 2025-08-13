@@ -1,12 +1,12 @@
 Main requirements:
-1. reactions = [Like, Love, HaHa, Sad, Angry] // no reaction
-2. each comment, one reaction or no reaction
-3. remove reaction
-4. allow to modify reaction
-5. comment's content support -> HTML content
-6. one comment, have MAXIMUM one level reply DONE
-7. allow to delete comment by owner and thread owner
-8. allow to edit comment by owner
+1. reactions = [Like, Love, HaHa, Sad, Angry] // no reaction DONE
+2. each comment, one reaction or no reaction DONE
+3. remove reaction DONE
+4. allow to modify reaction DONE
+5. comment's content support -> HTML content DONE
+6. one comment, have MAXIMUM one level reply DONE 
+7. allow to delete comment by owner and thread owner DONE partially
+8. allow to edit comment by owner DONE
 9. comments sorted by publish date
 10. provide date range filters (?)
 
@@ -14,7 +14,7 @@ Deliverables:
 1. React app with tailwindcss DONE
 2. standalon backend software written in Node.js (TS) DONE
 3. Readme with example files, scripts to run the software
-4. a checklist of fulfilled requirements
+4. a checklist of fulfilled requirements DONE
 5. docker-compose.yml to run all pieces of work locally
 
 Addition:

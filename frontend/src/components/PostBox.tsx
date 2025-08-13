@@ -3,58 +3,92 @@ import heartIcon from '../assets/heart.png';
 import chatBubble from '../assets/chat-bubble.png';
 import type { ReplyObject } from '../model/ReplyObject'
 import { ReplyBox } from './ReplyBox'
+import { ReplyInputBox } from "./ReplyInputBox";
 
 interface PostBoxProps {
     id: string;
     username: string;
     content: string;
     created_at: string;
+    curr_user: string;
+    onDelete: (id: string) => void;
 }
 
-export function PostBox({ id, username, content, created_at }: PostBoxProps) {
-
-
-    const handleReplyClick = () => {
-        setOpenReply(!openReply);
+class Reply implements ReplyObject{
+    id: string;
+    username: string;
+    content: string;
+    
+    constructor(id: string, username: string, content: string){
+        this.id = id;
+        this.username = username;
+        this.content = content;
     }
+}
+
+export function PostBox({ id, username, content, created_at, curr_user, onDelete }: PostBoxProps) {
+    const handleReplyClick = () => {
+        setOpenReply(!openReply)
+    }
+
+    const handleDeleteClick = () => {
+        onDelete(id);
+    }
+
+    const handleHover = () => {
+        setIsHovering(!isHovering);
+    }
+
+    const handleReplySubmit = async (content: string) => {
+        const response = await fetch(`/api/replies/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify( new Reply("", username, content) ),
+        });
+
+        const data = await response.json();
+        setReplies(data);
+    }
+
 
     useEffect(() => { 
         const fetchReplies = async () => {
-            const response = await fetch('/api/get_replies', {
-                method: 'POST',
+            const response = await fetch(`/api/replies/${id}`, {
+                method: 'GET',
                 headers: {
                 'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({  
-                    post_id: id
-                }),
+                }
             });
         
             const data = await response.json();
-            
-            let tempArray: ReplyObject[] = []
-          
-            JSON.parse(data.data).map((reply: ReplyObject) => {
-                tempArray.push(reply);
-            });
-            setReplies(tempArray);
-            console.log(tempArray);
+            setReplies(data);
         };
-    
         fetchReplies();
-      }, []);
+    }, []);
 
     const [openReply, setOpenReply] = useState(false);
     const [replies, setReplies] = useState<ReplyObject[]>([]);
+    const [isHovering, setIsHovering] = useState(false);
     const firstLetter: String = username[0].toUpperCase();
 
     return (
-        <div className="items-center w-full p-10 flex flex-col gap-3">
-            <div className="flex flex-row gap-3 w-full items-center"> {/* photo and username, just use letter for now */}
-                <div className="p-3 h-12 aspect-square bg-orange-600 flex justify-center items-center rounded-lg border-2"> {/* photo */}
-                    <div className="text-2xl font-bold">{firstLetter}</div>
+        <div className="w-full p-10 flex flex-col gap-3" onMouseEnter={handleHover} onMouseLeave={handleHover}>
+            <div className="flex flex-row gap-3 w-full items-center">
+                <div className="flex flex-row gap-3 w-1/2 items-center"> {/* photo and username, just use letter for now */}
+                    <div className="p-3 h-12 aspect-square bg-orange-600 flex justify-center items-center rounded-lg border-2"> {/* photo */}
+                        <div className="text-2xl font-bold">{firstLetter}</div>
+                    </div>
+                    <p className="text-white text-xl justify-start">{username}</p>
                 </div>
-                <p className="text-white text-xl justify-start">{username}</p>
+                {isHovering && (username === curr_user) &&
+                    <div className="w-1/2 flex justify-end">
+                        <button className="text-white border-2 border-white rounded-lg p-2 hover:bg-white hover:text-black" onClick={handleDeleteClick}>
+                            Delete
+                        </button>
+                    </div>
+                }
             </div>
             <div className="w-full flex flex-col gap-3"> {/* post section */}
                 <p className="w-full text-white rounded-md text-lg">{content}</p>
@@ -76,9 +110,13 @@ export function PostBox({ id, username, content, created_at }: PostBoxProps) {
             </div>
             {openReply && 
                 <div className="w-full flex flex-col gap-3"> {/* replies section */}
+                    <div>
+                        <ReplyInputBox handleReplySubmit={handleReplySubmit} />
+                        <hr className="w-full bg-white border-1 mt-2"></hr>
+                    </div>
                     {replies.map((reply: ReplyObject) => (
-                        <div>
-                            <ReplyBox key={reply.id} id={reply.id} username={reply.username} content={reply.content} />
+                        <div key={reply.id}>
+                            <ReplyBox id={reply.id} username={reply.username} content={reply.content} curr_user={curr_user} />
                             <hr className="w-full bg-white border-1 mt-2 mb-2"></hr>
                         </div>
                     ))}
