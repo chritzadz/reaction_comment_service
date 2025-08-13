@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Spinner from "react-bootstrap/esm/Spinner";
+import { SendHorizonal } from "lucide-react";
 
 interface ReplyInputBoxProps {
     handleReplySubmit: (content: string) => void;
@@ -24,7 +25,10 @@ export function ReplyInputBox({ handleReplySubmit }: ReplyInputBoxProps) {
                 <span className="visually-hidden">Loading...</span>
             </Spinner>
                 : 
-            <button className="bg-gray-800 rounded-2xl border-2 border-white hover:bg-white hover:text-black text-white py-2 px-3 rounded " onClick={onReplyClick}>Reply</button>
+            <div className="py-2 px-3 w-1/12">
+                <SendHorizonal size="full" color="white" onClick={onReplyClick}></SendHorizonal>
+                {/* <button className="bg-gray-800 rounded-2xl border-2 border-white hover:bg-white hover:text-black text-white py-2 px-3 rounded" onClick={onReplyClick}>Reply</button> */}
+            </div>
             }
         </div>
     )
