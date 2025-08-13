@@ -1,6 +1,7 @@
 import { useState } from "react";
 import heartIcon from '../assets/heart.png';
 import chatBubble from '../assets/chat-bubble.png';
+import { X, Check } from "lucide-react";
 
 interface PostEditBoxProps {
     username: string;
@@ -32,13 +33,13 @@ export function PostEditBox({ username, content, created_at, curr_user, onCancel
                     </div>
                     <p className="text-white text-xl justify-start">{username}</p>
                 </div>
-                <div className="w-1/2 flex flex-row justify-end gap-3">
-                    <button className="text-white border-2 border-white rounded-lg p-2 hover:bg-white hover:text-black" onClick={handleChangeClick}>
-                        Change
-                    </button>
-                    <button className="text-white border-2 border-white rounded-lg p-2 hover:bg-white hover:text-black" onClick={handleCancelClick}>
-                        Cancel
-                    </button>
+                <div className="w-1/2 flex flex-row justify-end gap-5">
+                    <div className="w-1/12">
+                        <Check size="full" color="green" onClick={handleChangeClick}/>
+                    </div>
+                    <div className="w-1/12">
+                        <X size="full" color="red" onClick={handleCancelClick}/>
+                    </div>                          
                 </div>
             </div>
             <div className="w-full flex flex-col gap-3"> {/* post section */}

@@ -5,6 +5,8 @@ import type { ReplyObject } from '../model/ReplyObject'
 import { ReplyBox } from './ReplyBox'
 import { ReplyInputBox } from "./ReplyInputBox";
 import { PostEditBox } from "./PostEditBox";
+import { Pencil, Trash } from "lucide-react";
+
 
 interface PostBoxProps {
     id: string;
@@ -114,13 +116,13 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
                             <p className="text-white text-xl justify-start">{username}</p>
                         </div>
                         {isHovering && allowEditing &&
-                            <div className="w-1/2 flex flex-row justify-end gap-3">
-                                <button className="w-1/5 text-white border-2 border-white rounded-lg p-2 hover:bg-white hover:text-black" onClick={handleDeleteClick}>
-                                    Delete
-                                </button>
-                                <button className="w-1/5 text-white border-2 border-white rounded-lg p-2 hover:bg-white hover:text-black" onClick={handleEditClick}>
-                                    Edit
-                                </button>
+                            <div className="w-1/2 flex flex-row justify-end gap-5">
+                                <div className="w-1/12">
+                                    <Trash size="full" color="red" onClick={handleDeleteClick}/>
+                                </div>
+                                <div className="w-1/12">
+                                    <Pencil size="full" color="white"onClick={handleEditClick}/>
+                                </div>                          
                             </div>
                         }
                     </div>
