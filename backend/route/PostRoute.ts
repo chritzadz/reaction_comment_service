@@ -15,4 +15,6 @@ router.post('/posts', controller.postPost.bind(controller));
 
 router.delete('/posts/:id', controller.deletePost.bind(controller));
 
+router.patch('/posts/:id', controller.patchPost.bind(controller));
+
 export { router as PostRoutes }

@@ -29,5 +29,11 @@ export class PostController {
         const posts = await this.postService.deletePost(id);
         res.status(201).json(posts);
     }
+
+    public async patchPost(req: Request, res: Response): Promise<void> {
+        const { id } = req.params;
+        const post = await this.postService.patchPost(id, req.body.newContent);
+        res.status(201).json(post);
+    }
 }
 

@@ -39,4 +39,20 @@ export class PostRepository {
             throw new Error("PostRepository -> " + error);
         }
     }
+
+    async updateContent(id: string, newContent: string): Promise<Post> {
+        try {
+            const task = await pool.query(
+            `
+            UPDATE posts
+            SET content = $2
+            WHERE id = $1
+            RETURNING *;
+            `, [id, newContent]);
+
+            return task.rows[0];
+        } catch (error){
+            throw new Error("PostRepository -> " + error);
+        }
+    }
 }

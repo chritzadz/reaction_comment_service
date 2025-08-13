@@ -40,4 +40,13 @@ export class PostService {
             throw new Error("PostService -> " + error);
         }
     }
+
+    async patchPost(id: string, newContent: string): Promise<Post>{
+        try {
+            const task = await this.postRepository.updateContent(id, newContent);
+            return task;
+        } catch (error) {
+            throw new Error("PostService -> " + error);
+        }
+    }
 }
