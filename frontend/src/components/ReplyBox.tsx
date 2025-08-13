@@ -125,7 +125,7 @@ export function ReplyBox({ id, username, content, curr_user}: ReplyBoxProps) {
                     <p className="text-white text-xl justify-start">{username}</p>
                 </div>
                 { mouseOn &&
-                    <div className="w-full w-1/2 h-10 mr-10 flex flex-row gap-5 text-white justify-end pl-2 pr-5">
+                    <div className="w-full w-1/2 h-10 mr-10 flex flex-row lg:gap-5 md:gap-3 sm:gap-3 text-white justify-end pl-2 pr-5">
                         {
                             selectedReaction === "like" ? (
                                 <span className="font-bold">

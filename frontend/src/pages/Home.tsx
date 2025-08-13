@@ -66,9 +66,9 @@ function Home() {
   return (
     <div className="relative">
       <div className="justify-center items-center flex flex-row w-screen min-h-screen bg-gray-900 z-0">
-        <div className="comment-box w-1/5 max-lg:w-1/5 max-md:w-1/5 max-sm:w-0 h-full">
+        <div className="comment-box w-1/5 max-lg:w-1/5 max-md:w-0 max-sm:w-0 h-full">
         </div>
-        <div className="comment-box w-3/5 max-lg:w-3/5 max-md:w-3/5 max-sm:w-full border">
+        <div className="comment-box w-3/5 max-lg:w-3/5 max-md:w-full max-sm:w-full border">
           <PostInputBox username={username} handlePostSubmit={handlePostSubmit} />
           <hr className="w-full bg-white border-1"></hr>
           <div>
@@ -85,7 +85,7 @@ function Home() {
             ))}
           </div>
         </div>
-        <div className="comment-box w-1/5 max-lg:w-1/5 max-md:w-1/5 max-sm:w-0 h-full">
+        <div className="comment-box w-1/5 max-lg:w-1/5 max-md:w-0 max-sm:w-0 h-full">
         </div>
       </div>
     </div>
