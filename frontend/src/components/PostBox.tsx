@@ -161,7 +161,7 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
                 </div>   
             }
             { isEditing && 
-                <PostEditBox username={username} content={content} created_at={created_at} curr_user={curr_user} onCancel={handleCancelClick} onSubmitChange={handleChangeClick} ></PostEditBox>
+                <PostEditBox username={username} content={content} created_at={created_at} onCancel={handleCancelClick} onSubmitChange={handleChangeClick} ></PostEditBox>
             }
         </>
     )

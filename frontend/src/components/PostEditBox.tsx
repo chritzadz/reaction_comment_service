@@ -7,12 +7,11 @@ interface PostEditBoxProps {
     username: string;
     content: string;
     created_at: string;
-    curr_user: string;
     onCancel: () => void;
     onSubmitChange: (newContent: string) => void;
 }
 
-export function PostEditBox({ username, content, created_at, curr_user, onCancel, onSubmitChange }: PostEditBoxProps) {
+export function PostEditBox({ username, content, created_at, onCancel, onSubmitChange }: PostEditBoxProps) {
     const handleChangeClick = () => {
         onSubmitChange(editedContent);
     }
