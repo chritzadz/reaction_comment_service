@@ -1,0 +1,98 @@
+@startuml Reaction Comment Service Sequence Diagram
+!theme plain
+title Reaction Comment Service
+
+actor User as U
+participant "React Frontend" as FE
+participant "Express Backend" as BE
+participant "Post Controller" as PC
+participant "Reply Controller" as RC
+participant "Reaction Controller" as RxC
+participant "Post Service" as PS
+participant "Reply Service" as RS
+participant "Reaction Service" as RxS
+participant "Database" as DB
+
+== user retrieve all posts ==
+U -> FE: Load Home Page
+FE -> BE: GET /api/posts
+BE -> PC: getPosts()
+PC -> PS: getAllPosts()
+PS -> DB: SELECT posts ...
+DB -> PS: posts data
+PS -> PC: posts[]
+PC -> BE: response
+BE -> FE: JSON posts
+FE -> U: Display posts
+
+== user posting post ==
+U -> FE: Enter post content
+U -> FE: Click "Post" button
+FE -> BE: POST /api/posts
+note right: {content: "Hello!"}
+BE -> PC: createPost()
+PC -> PS: createPost(data)
+PS -> DB: INSERT post
+DB -> PS: post created
+PS -> PC: new post
+PC -> BE: 201 Created
+BE -> FE: Success response
+FE -> U: Show success message
+FE -> U: Show updated posts
+
+== user react ==
+U -> FE: Click reaction
+FE -> BE: POST /api/reactions
+note right: {postId: 1, type: "heart"}
+BE -> RxC: addReaction()
+RxC -> RxS: createReaction(data)
+RxS -> DB: INSERT reaction
+DB -> RxS: reaction created
+RxS -> RxC: new reaction
+RxC -> BE: 201 Created
+BE -> FE: Success response
+FE -> U: Update reaction count
+
+== post retrieve all replies ==
+U -> FE: Click load replies for a post
+FE -> BE: GET /api/replies/:post_id
+note right: {post_id: 1}
+BE -> PC: getReplies()
+PC -> PS: getAllReplies()
+PS -> DB: SELECT replies WHERE post_id == $1
+DB -> PS: replies data
+PS -> PC: replies[]
+PC -> BE: response
+BE -> FE: JSON posts
+FE -> U: Display replies
+
+== user post reply ==
+U -> FE: Type comment
+U -> FE: Click "Reply" button
+FE -> BE: POST /api/replies
+note right: {postId: 1, content: "Great post!", parentId: null}
+BE -> RC: createReply()
+RC -> RS: createReply(data)
+RS -> DB: INSERT reply
+DB -> RS: reply created
+RS -> RC: new reply
+RC -> BE: 201 Created
+BE -> FE: Success response
+FE -> U: Show new comment
+
+== Error Handling ==
+note over FE, DB: All requests include error handling
+alt Database Error
+    DB -> RS: Connection error
+    RS -> RC: database error
+    RC -> BE: 500 Internal Server Error
+    BE -> FE: Error response
+    FE -> U: "Something went wrong"
+else Validation Error
+    BE -> PC: Invalid data
+    PC -> BE: 400 Bad Request
+    BE -> FE: Validation error
+    FE -> U: Show field errors
+end
+
+@enduml

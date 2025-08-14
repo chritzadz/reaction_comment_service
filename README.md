@@ -51,7 +51,7 @@ install postgres locally, if have not, and set up the database as follow:
 if needed, below is the dummy data:
 ```
 -- some basic DML, for set up
-INSERT INTO posts (username, content, created_at) VALUES 
+INSERT INTO posts (username, content, created_at) VALUES
 ('user1', 'This is a posts', '2023-01-01'),
 ('user2', 'This is another posts', '2023-01-02');
 
