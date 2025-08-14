@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import heartIcon from '../assets/heart.png';
-import chatBubble from '../assets/chat-bubble.png';
 import type { ReplyObject } from '../model/ReplyObject'
 import { ReplyBox } from './ReplyBox'
 import { ReplyInputBox } from "./ReplyInputBox";
 import { PostEditBox } from "./PostEditBox";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, Heart, MessageCircle, Share } from "lucide-react";
 
 
 interface PostBoxProps {
@@ -135,11 +133,14 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
                     <div className="w-full"> {/* comments and like icon and the count as well */}
                         <hr className="w-full border-white" />
                         <div className="w-full items-center justify-center flex flex-row p-2 gap-10">
-                            <div className="h-10 aspect-square rounded-lg border-2 p-1 bg-slate-500" onClick={handleReplyClick}>
-                                <img src={chatBubble} className=""></img>
+                            <div className="h-10 aspect-square rounded-lg p-1 bg-gray-900" onClick={handleReplyClick}>
+                                <MessageCircle size="full" color="white" />
                             </div>
-                            <div className="h-10 aspect-square rounded-lg border-2 p-1 bg-slate-500" onClick={() => {}}>
-                                <img src={heartIcon} className=""></img>
+                            <div className="h-10 aspect-square rounded-lg p-1 bg-gray-900" onClick={() => {}}>
+                                <Heart size="full" color="white" />
+                            </div>
+                            <div className="h-10 aspect-square rounded-lg p-1 bg-gray-900" onClick={() => {}}>
+                                <Share size="full" color="white" />
                             </div>
                         </div>
                         <hr className="w-full border-white" />
