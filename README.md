@@ -1,10 +1,12 @@
 # reaction_comment_service
 
-##
-the structure is
+## relation structure
+the structure is:
+```
 ---post
  |---reply
-   |--- 
+   |--- (not decided)
+```
 
 ## postgresql setup
 Postgres is used to create a simple database scheme for fetching data related to the app
