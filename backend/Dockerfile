@@ -1,21 +1,13 @@
-FROM node:18-alpine
+FROM node:latest
 
 WORKDIR /app
 
-# Copy package files first (for better caching)
 COPY package*.json ./
 
-# Install dependencies
 RUN npm install
 
-# Copy source code
 COPY . .
 
-# Build the TypeScript code
-RUN npm run build
-
-# Expose the port
 EXPOSE 3001
 
-# Start the application
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
