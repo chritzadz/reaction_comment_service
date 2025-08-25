@@ -92,6 +92,8 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
             setReplies(data);
         };
         fetchReplies();
+        setCreateAtDate(created_at.split("T")[0]);
+        console.log(created_at);
     }, []);
 
     const [openReply, setOpenReply] = useState(false);
@@ -99,6 +101,7 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
     const [isHovering, setIsHovering] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [contentValue, setContentValue] = useState(content);
+    const [createAtDate, setCreateAtDate] = useState("");
     const allowEditing = username == curr_user;
     const firstLetter: String = username[0].toUpperCase();
 
@@ -127,7 +130,7 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
                     <div className="w-full flex flex-col gap-3"> {/* post section */}
                         <p className="w-full text-white rounded-md text-lg" dangerouslySetInnerHTML={{ __html: contentValue }}></p>
                         <div className="flex w-full text-md text-white"> {/* date */}
-                            <p>{created_at}</p>
+                            <p>{createAtDate}</p>
                         </div>
                     </div>
                     <div className="w-full"> {/* comments and like icon and the count as well */}
