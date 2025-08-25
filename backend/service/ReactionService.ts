@@ -46,7 +46,7 @@ export class ReactionService {
             const reactions = await this.getAllByReply(reply_id);
             return reactions;
         } catch (error) {
-            throw new Error("Error deleting reaction");
+            throw new Error("Error deleting reaction" + error);
         }
     }
 

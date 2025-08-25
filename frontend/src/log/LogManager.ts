@@ -1,4 +1,7 @@
+import type { Log } from "../model/LogObject";
+
 export interface LogManager{
     type: string
-    show(): string[];
+    show(): Log[];
+    update(): void;
 }

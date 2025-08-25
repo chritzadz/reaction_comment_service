@@ -31,7 +31,7 @@ CREATE TABLE reactions (
 );
 
 CREATE TABLE logs (
-    log_time TIMESTAMP NOT NULL,
+    log_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     log_text TEXT,
     log_type VARCHAR(50)
 );
@@ -55,3 +55,15 @@ INSERT INTO replies (id, username, content) VALUES
 INSERT INTO users (username) VALUES
 ('user1'),
 ('user2');
+
+CREATE OR REPLACE FUNCTION notify_log_insert() RETURNS trigger AS $$
+BEGIN
+    PERFORM pg_notify('log_channel', 'new_log');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER log_insert_notify
+AFTER INSERT ON logs
+FOR EACH ROW
+EXECUTE FUNCTION notify_log_insert();

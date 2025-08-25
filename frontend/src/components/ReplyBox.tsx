@@ -116,7 +116,7 @@ export function ReplyBox({ id, username, content, curr_user}: ReplyBoxProps) {
     }, []);
 
     return (
-        <div className="w-full flex flex-col w-full gap-2 ml-10" onMouseEnter={handleHover} onMouseLeave={handleHover}>
+        <div className="w-full flex flex-col gap-2 ml-10" onMouseEnter={handleHover} onMouseLeave={handleHover}>
             <div className="flex flex-row gap-3 w-full items-center">
                 <div className="flex flex-row gap-3 w-1/2 items-center"> {/* photo and username, just use letter for now */}
                     <div className="p-3 h-10 aspect-square bg-orange-600 flex justify-center items-center rounded-lg border-2"> {/* photo */}
