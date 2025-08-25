@@ -6,7 +6,7 @@ export class PostHaveRepliesRepository {
         const task = await pool.query(`
            INSERT INTO post_have_replies (post_id, reply_id) VALUES ($1, $2) RETURNING *;
            `, [postHaveReplies.post_id, postHaveReplies.reply_id]
-       );
+        );
 
         return task.rows[0];
     }

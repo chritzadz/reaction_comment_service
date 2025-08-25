@@ -2,7 +2,7 @@ import type { LogManager } from "../LogManager";
 
 export default class ReactionLogManager implements LogManager{
     type: string;
-
+    
 
     constructor(type: string){
         this.type = type;

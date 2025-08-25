@@ -30,6 +30,12 @@ CREATE TABLE reactions (
     PRIMARY KEY(reply_id, username)
 );
 
+CREATE TABLE logs (
+    log_time TIMESTAMP NOT NULL,
+    log_text TEXT,
+    log_type VARCHAR(50)
+);
+
 -- some basic DML, for set up
 INSERT INTO posts (username, content, created_at) VALUES 
 ('user1', 'This is a posts', '2023-01-01'),

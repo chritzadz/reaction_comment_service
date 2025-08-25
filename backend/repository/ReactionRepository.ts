@@ -18,6 +18,13 @@ export class ReactionRepository {
             INSERT INTO reactions (username, type, reply_id) VALUES ($1, $2, $3) RETURNING *;
         `, [reaction.username, reaction.type, reaction.reply_id]);
 
+        const log: string = `User [${reaction.username}] reacted with [${reaction.type}] to reply [${reaction.reply_id}]`; 
+        const logTask = await pool.query(
+            `
+            INSERT INTO logs (log_text, log_type) VALUES ($1, $2);
+            `, [log, 'reaction']
+        )
+
         return task.rows[0];
     }
 
@@ -25,6 +32,13 @@ export class ReactionRepository {
         const task = await pool.query(`
             DELETE FROM reactions WHERE username = $1 AND reply_id = $2 RETURNING *;
         `, [username, reply_id]);
+
+        const log: string = `User [${username}] delete reaction from reply [${reply_id}]`; 
+        const logTask = await pool.query(
+            `
+            INSERT INTO logs (log_text, log_type) VALUES ($1, $2);
+            `, [log, 'reaction']
+        )
 
         return task.rows[0];
     }
@@ -37,6 +51,13 @@ export class ReactionRepository {
         WHERE username = $2 AND reply_id = $3
         RETURNING *;
         `, [newType, username, reply_id]);
+
+        const log: string = `User [${username}] update reaction to [${newType}] from reply [${reply_id}]`; 
+        const logTask = await pool.query(
+            `
+            INSERT INTO logs (log_text, log_type) VALUES ($1, $2);
+            `, [log, 'reaction']
+        )
 
         return task.rows[0];
     }
