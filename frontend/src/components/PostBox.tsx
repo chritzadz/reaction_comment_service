@@ -125,7 +125,7 @@ export function PostBox({ id, username, content, created_at, curr_user, onDelete
                         }
                     </div>
                     <div className="w-full flex flex-col gap-3"> {/* post section */}
-                        <p className="w-full text-white rounded-md text-lg">{contentValue}</p>
+                        <p className="w-full text-white rounded-md text-lg" dangerouslySetInnerHTML={{ __html: contentValue }}></p>
                         <div className="flex w-full text-md text-white"> {/* date */}
                             <p>{created_at}</p>
                         </div>
