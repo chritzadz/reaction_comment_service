@@ -13,6 +13,6 @@
         "declaration": true,
         "sourceMap": true
     },
-    "include": ["**/*"],
+    "include": ["**/*", "../frontend/src/log"],
     "exclude": ["node_modules", "dist"]
 }
